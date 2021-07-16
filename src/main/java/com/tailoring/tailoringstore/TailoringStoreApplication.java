@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
-@SpringBootApplication(scanBasePackages={"com.tailoring.tailoringstore.config", "com.tailoring.tailoringstore.controller", "com.tailoring.tailoringstore.model"})
+@SpringBootApplication(scanBasePackages={"com.tailoring.tailoringstore.config", "com.tailoring.tailoringstore.controller", "com.tailoring.tailoringstore.model", "com.tailoring.tailoringstore.service"})
 public class TailoringStoreApplication extends SpringBootServletInitializer {
 
   @Override
