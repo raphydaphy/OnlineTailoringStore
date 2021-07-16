@@ -67,7 +67,13 @@ CREATE TABLE `categories` (
 CREATE TABLE `subcategories` (
     `subcategoryId` INT NOT NULL AUTO_INCREMENT,
     `subcategoryName`VARCHAR(64) NOT NULL,
-    `categoryId` INT NOT NULL,
-    PRIMARY KEY (subcategoryId),
-    FOREIGN KEY (categoryId) REFERENCES categories(categoryId)
+    PRIMARY KEY (subcategoryId)
+) ENGINE=InnoDB;
+
+CREATE TABLE `dressTypes` (
+    `dressTypeId` INT NOT NULL AUTO_INCREMENT,
+    `dressTypeName` VARCHAR(64) NOT NULL,
+    `subcategoryId` INT NOT NULL,
+    PRIMARY KEY(dressTypeId),
+    FOREIGN KEY(subcategoryId) REFERENCES subcategories(subcategoryId) ON DELETE CASCADE
 ) ENGINE=InnoDB;

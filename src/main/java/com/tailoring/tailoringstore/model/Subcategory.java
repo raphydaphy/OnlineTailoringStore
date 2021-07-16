@@ -11,9 +11,6 @@ public class Subcategory {
   private int subcategoryId;
   private String subcategoryName;
 
-  private int categoryId;
-  private String categoryName;
-
   public int getSubcategoryId() {
     return subcategoryId;
   }
@@ -30,31 +27,12 @@ public class Subcategory {
     this.subcategoryName = subcategoryName;
   }
 
-  public int getCategoryId() {
-    return categoryId;
-  }
-
-  public void setCategoryId(int categoryId) {
-    this.categoryId = categoryId;
-  }
-
-  public String getCategoryName() {
-    return categoryName;
-  }
-
-  public void setCategoryName(String categoryName) {
-    this.categoryName = categoryName;
-  }
-
   public static class SubcategoryRowMapper implements RowMapper<Subcategory> {
     @Override
     public Subcategory mapRow(ResultSet rs, int rowNum) throws SQLException {
       Subcategory category = new Subcategory();
       category.setSubcategoryId(rs.getInt("subcategoryId"));
       category.setSubcategoryName(rs.getString("subcategoryName"));
-
-      category.setCategoryId(rs.getInt("categoryId"));
-      category.setCategoryName(rs.getString("categoryName"));
       return category;
     }
   }
