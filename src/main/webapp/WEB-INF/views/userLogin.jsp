@@ -6,8 +6,14 @@
 		Don't have an account? <a href="/userRegister">Register now</a>!
 	</p>
 
+	<%
+		String error = (String) request.getAttribute("error");
+		if(error != null) {
+			out.print("<p class='text-warning'>" + error + "</p>");
+		}
+	%>
 
-	<form:form method="post" action="/login" modelAttribute="user">
+	<form:form method="post" action="/userSuccessLogin" modelAttribute="user">
 		<div class="form-group">
 			<label for="username">Username</label>
 			<form:input path="username" name="username" id="username" cssClass="form-control" />

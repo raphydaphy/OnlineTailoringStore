@@ -11,7 +11,7 @@ USE `tailoringstore`;
 
 CREATE TABLE `users` (
     username VARCHAR(32) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    passwordHash VARCHAR(255) NOT NULL,
     firstName VARCHAR(32) NOT NULL,
     lastName VARCHAR(32) NOT NULL,
     dateOfBirth VARCHAR(10) NOT NULL,

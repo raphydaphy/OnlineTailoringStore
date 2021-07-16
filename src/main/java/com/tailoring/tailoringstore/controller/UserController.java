@@ -2,6 +2,7 @@ package com.tailoring.tailoringstore.controller;
 
 import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.service.UserService;
+import com.tailoring.tailoringstore.struct.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,11 +35,16 @@ public class UserController {
       return "userLogin";
     }
 
-    System.out.println("Username: " + user.getUsername());
-    System.out.println("Password: " + user.getPassword());
+    System.out.println("Logging in as " + user.toString());
+    UserResponse response = userService.login(user);
 
-    model.put("user", user.getUsername());
-    return "userSuccessLogin";
+    if (response.hasError()) {
+      model.put("error", response.getError());
+      return "userLogin";
+    } else {
+      model.put("user", response.getUser().getUsername());
+      return "userSuccessLogin";
+    }
   }
 
   @RequestMapping("/userRegister")
@@ -55,12 +61,14 @@ public class UserController {
 
     System.out.println("Registering " + user.toString());
 
-    if (userService.addUser(user)) {
-      model.put("user", user.getUsername());
-      return "userSuccessRegister";
-    } else {
-      model.put("error", "Failed to create user");
+    UserResponse response = userService.addUser(user);
+
+    if (response.hasError()) {
+      model.put("error", response.getError());
       return "userRegister";
+    } else {
+      model.put("user", response.getUser().getUsername());
+      return "userSuccessRegister";
     }
   }
 

@@ -1,6 +1,10 @@
 package com.tailoring.tailoringstore.model;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Component
 public class User {
@@ -109,5 +113,22 @@ public class User {
   public String toString() {
     return "User [username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", gender="
       + gender + ", email=" + email + ", contactNumber=" + contactNumber + ", isTailor=" + isTailor + "]";
+  }
+
+  public static class UserRowMapper implements RowMapper<User> {
+    @Override
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+      User user = new User();
+      user.setUsername(rs.getString("username"));
+      user.setPasswordHash(rs.getString("passwordHash"));
+      user.setFirstName(rs.getString("firstName"));
+      user.setLastName(rs.getString("lastName"));
+      user.setDateOfBirth(rs.getString("dateOfBirth"));
+      user.setGender(rs.getString("gender"));
+      user.setEmail(rs.getString("email"));
+      user.setContactNumber(rs.getString("contactNumber"));
+      user.setIsTailor(rs.getBoolean("isTailor"));
+      return user;
+    }
   }
 }
