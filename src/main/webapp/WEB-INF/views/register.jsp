@@ -3,7 +3,7 @@
   <h1>Online Tailoring Store</h1>
   <p>
     Create a new account using to the form below.<br />
-    Already have an account? <a href="${pageContext.request.contextPath}/userLogin">Login now</a>!
+    Already have an account? <a href="/login">Login now</a>!
   </p>
 
   <%
@@ -13,7 +13,7 @@
     }
   %>
 
-  <form:form method="post" action="/userSuccessRegister" modelAttribute="user">
+  <form:form method="post" action="/register" modelAttribute="user">
     <div class="row">
       <div class="col-sm form-group">
         <label for="username">Username</label>
@@ -58,10 +58,10 @@
         </form:select>
       </div>
       <div class="col-sm form-group">
-        <label for="isTailor">Account Type</label>
-        <form:select path="isTailor" name="isTailor" id="isTailor" cssClass="form-control" required="true">
-          <form:option value="0">Customer</form:option>
-          <form:option value="1">Tailor</form:option>
+        <label for="category">Account Type</label>
+        <form:select path="category" name="category" id="category" cssClass="form-control" required="true">
+          <form:option value="customer">Customer</form:option>
+          <form:option value="tailor">Tailor</form:option>
         </form:select>
       </div>
     </div>

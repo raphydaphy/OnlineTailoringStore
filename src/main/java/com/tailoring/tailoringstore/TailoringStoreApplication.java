@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 
 @SpringBootApplication(scanBasePackages={"com.tailoring.tailoringstore.config", "com.tailoring.tailoringstore.controller", "com.tailoring.tailoringstore.model", "com.tailoring.tailoringstore.service"})
 public class TailoringStoreApplication extends SpringBootServletInitializer {

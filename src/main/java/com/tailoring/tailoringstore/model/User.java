@@ -17,7 +17,7 @@ public class User {
 
   private String email;
   private String contactNumber;
-  private boolean isTailor;
+  private String category;
 
   private String dateOfBirth;
   private String gender;
@@ -94,25 +94,30 @@ public class User {
     this.contactNumber = contactNumber;
   }
 
-  public boolean getIsTailor() {
-    return isTailor;
+  public String getCategory() {
+    return category;
   }
 
-  public void setIsTailor(boolean isTailor) {
-    this.isTailor = isTailor;
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  public boolean isCustomer() {
+    return "customer".equals(category);
   }
 
   public boolean isTailor() {
-    return getIsTailor();
+    return "tailor".equals(category);
   }
-  public boolean isCustomer() {
-    return !isTailor();
+
+  public boolean isAdmin() {
+    return "admin".equals(category);
   }
 
   @Override
   public String toString() {
     return "User [username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", gender="
-      + gender + ", email=" + email + ", contactNumber=" + contactNumber + ", isTailor=" + isTailor + "]";
+      + gender + ", email=" + email + ", contactNumber=" + contactNumber + ", category=" + category + "]";
   }
 
   public static class UserRowMapper implements RowMapper<User> {
@@ -127,7 +132,7 @@ public class User {
       user.setGender(rs.getString("gender"));
       user.setEmail(rs.getString("email"));
       user.setContactNumber(rs.getString("contactNumber"));
-      user.setIsTailor(rs.getBoolean("isTailor"));
+      user.setCategory(rs.getString("category"));
       return user;
     }
   }

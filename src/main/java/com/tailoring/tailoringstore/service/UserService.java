@@ -34,13 +34,13 @@ public class UserService {
       return new UserResponse("That username is already registered");
     }
 
-    String sql = "INSERT INTO users (username, passwordHash, firstName, lastName, dateOfBirth, gender, email, contactNumber, isTailor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO users (username, passwordHash, firstName, lastName, dateOfBirth, gender, email, contactNumber, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10, new SecureRandom());
     String passwordHash = encoder.encode(user.getPassword());
 
     try {
-      jdbcTemplate.update(sql, user.getUsername(), passwordHash, user.getFirstName(), user.getLastName(), user.getDateOfBirth(), user.getGender(), user.getEmail(), user.getContactNumber(), user.getIsTailor());
+      jdbcTemplate.update(sql, user.getUsername(), passwordHash, user.getFirstName(), user.getLastName(), user.getDateOfBirth(), user.getGender(), user.getEmail(), user.getContactNumber(), user.getCategory());
       user.setPassword(null);
       user.setPasswordHash(passwordHash);
       return new UserResponse(user);

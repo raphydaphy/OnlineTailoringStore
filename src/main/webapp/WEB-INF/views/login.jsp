@@ -3,17 +3,20 @@
 	<h1>Online Tailoring Store</h1>
 	<p>
 		Sign in to your account using to the form below.<br />
-		Don't have an account? <a href="/userRegister">Register now</a>!
+		Don't have an account? <a href="/register">Register now</a>!
 	</p>
 
 	<%
 		String error = (String) request.getAttribute("error");
+		String message = (String) request.getAttribute("message");
 		if(error != null) {
 			out.print("<p class='text-warning'>" + error + "</p>");
+		} else if (message != null) {
+			out.print("<p class='text-info'>" + message + "</p>");
 		}
 	%>
 
-	<form:form method="post" action="/userSuccessLogin" modelAttribute="user">
+	<form:form method="post" action="/login" modelAttribute="user">
 		<div class="form-group">
 			<label for="username">Username</label>
 			<form:input path="username" name="username" id="username" cssClass="form-control" />

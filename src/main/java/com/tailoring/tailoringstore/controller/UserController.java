@@ -4,6 +4,7 @@ import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.service.UserService;
 import com.tailoring.tailoringstore.struct.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -12,64 +13,107 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class UserController {
 
   @Autowired
   private UserService userService;
 
-  @RequestMapping("/")
-  public String home(Model model) {
-    return "index";
+  @RequestMapping("/login")
+  public String login(@ModelAttribute("user") User user, Model model) {
+    return "login";
   }
 
-  @RequestMapping("/userLogin")
-  public String userLogin(@ModelAttribute("user") User user, Model model) {
-    return "userLogin";
-  }
-
-  @RequestMapping(value="/userSuccessLogin", method=RequestMethod.POST)
-  public String userSuccessLogin(@ModelAttribute("user") User user, BindingResult result, ModelMap model) {
+  @RequestMapping(value="/login", method=RequestMethod.POST)
+  public String loginResponse(@ModelAttribute("user") User user, BindingResult result, ModelMap model, HttpServletRequest req) {
     if (result.hasErrors()) {
       System.out.println("Result errors: " + result.getAllErrors().toString());
-      return "userLogin";
+      return "login";
     }
 
-    System.out.println("Logging in as " + user.toString());
     UserResponse response = userService.login(user);
-
     if (response.hasError()) {
       model.put("error", response.getError());
-      return "userLogin";
+      return "login";
     } else {
-      model.put("user", response.getUser().getUsername());
-      return "userSuccessLogin";
+      model.put("user", response.getUser());
+      req.getSession().setAttribute("user", response.getUser().getUsername());
+      return "account";
     }
   }
 
-  @RequestMapping("/userRegister")
-  public String userRegister(@ModelAttribute("user") User user, Model model) {
-    return "userRegister";
+  @RequestMapping("/register")
+  public String register(@ModelAttribute("user") User user, Model model) {
+    return "register";
   }
 
-  @RequestMapping(value="/userSuccessRegister", method=RequestMethod.POST)
-  public String userSuccessRegister(@ModelAttribute("user") User user, BindingResult result, ModelMap model) {
+  @RequestMapping(value="/register", method=RequestMethod.POST)
+  public String registerResponse(@ModelAttribute("user") User user, BindingResult result, ModelMap model) {
     if (result.hasErrors()) {
       System.out.println("Result errors: " + result.getAllErrors().toString());
-      return "userRegister";
+      return "register";
     }
 
-    System.out.println("Registering " + user.toString());
+    UserResponse response = userService.addUser(user);
+    if (response.hasError()) {
+      model.put("error", response.getError());
+      return "register";
+    } else {
+      model.put("message", "New user created successfully!");
+      return "login";
+    }
+  }
 
+  @RequestMapping("/adminRegister")
+  public String adminRegister(@ModelAttribute("user") User user, Model model) {
+    return "adminRegister";
+  }
+
+  @RequestMapping(value="/adminRegister", method=RequestMethod.POST)
+  public String adminRegisterResponse(@ModelAttribute("user") User user, BindingResult result, ModelMap model) {
+    if (result.hasErrors()) {
+      System.out.println("Result errors: " + result.getAllErrors().toString());
+      model.put("error", "An error occurred. Please try again.");
+      return "adminRegister";
+    }
+
+    user.setCategory("admin");
     UserResponse response = userService.addUser(user);
 
     if (response.hasError()) {
       model.put("error", response.getError());
-      return "userRegister";
+      return "adminRegister";
     } else {
-      model.put("user", response.getUser().getUsername());
-      return "userSuccessRegister";
+      model.put("message", "New admin created successfully!");
+      return "login";
     }
   }
 
+  @RequestMapping("/account")
+  public String account(@ModelAttribute("user") User user, ModelMap model, HttpServletRequest req) {
+    String username;
+
+    try {
+      username = (String) req.getSession().getAttribute("user");
+    } catch (Exception e) {
+      model.put("error", "Please log in to continue");
+      return "login";
+    }
+
+    if (username == null) {
+      model.put("error", "Please log in to continue");
+      return "login";
+    }
+
+    User signedInUser = userService.getUser(username);
+    if (signedInUser == null) {
+      model.put("error", "Invalid login.");
+      return "login";
+    }
+
+    model.put("user", signedInUser);
+    return "account";
+  }
 }
