@@ -21,6 +21,12 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  @RequestMapping("/")
+  public String home(ModelMap model, HttpServletRequest req) {
+    User user = userService.addUserToModel(model, req);
+    return user != null ? "account" : "index";
+  }
+
   @RequestMapping("/login")
   public String login(@ModelAttribute("user") User user, Model model) {
     return "login";

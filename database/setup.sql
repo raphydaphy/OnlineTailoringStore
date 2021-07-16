@@ -57,3 +57,9 @@ CREATE TABLE `tickets` (
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (responseUsername) REFERENCES users(username)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `categories` (
+    `categoryId` INT NOT NULL AUTO_INCREMENT,
+    `categoryName` VARCHAR(64) NOT NULL,
+    PRIMARY KEY (categoryId)
+) ENGINE=InnoDB;

@@ -37,9 +37,14 @@
             <strong>Contact Number: </strong> ${ticket.user.contactNumber}<br />
           </c:if>
           <strong>Description: </strong>${ticket.description}
+          <c:if test="${ticket.response != null}">
+            <br /><br />
+            <strong>Handled By: </strong> ${ticket.responseUsername}<br />
+            <strong>Response: </strong> ${ticket.response}<br />
+          </c:if>
         </p>
-        <c:if test="${user.category == 'admin'}">
-          <a href="/resolveTicket?ticketId=${ticket.ticketId}" class="btn btn-primary">Respond</a>
+        <c:if test="${user.category == 'admin' && ticket.response == null}">
+          <a href="/ticketRespond?ticketId=${ticket.ticketId}" class="btn btn-primary">Respond</a>
         </c:if>
         <a href="/closeTicket?ticketId=${ticket.ticketId}" class="btn btn-secondary">Close Ticket</a>
       </div>

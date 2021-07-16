@@ -43,6 +43,18 @@ public class TicketService {
     }
   }
 
+  public boolean respond(int ticketID, String response, User user) {
+    String sql = "UPDATE tickets SET response = ?, responseUsername = ? WHERE ticketID = ?";
+    try {
+      jdbcTemplate.update(sql, response, user.getUsername(), ticketID);
+      return true;
+    } catch (Exception e) {
+      System.err.println("Failed to respond to ticket ticket #" + ticketID + ": " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
+  }
+
   public Ticket getTicket(int ticketId) {
     try {
       List<Ticket> tickets = jdbcTemplate.query("SELECT t.*, u.* from tickets t INNER JOIN users u ON t.username = u.username WHERE t.ticketId = ?", new Object[] {ticketId}, new Ticket.TicketRowMapper());

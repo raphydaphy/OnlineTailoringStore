@@ -16,6 +16,7 @@ public class Ticket {
 
   private boolean closed;
 
+  private String username;
   private User user;
 
   private String response;
@@ -61,6 +62,14 @@ public class Ticket {
     this.closed = closed;
   }
 
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
   public User getUser() {
     return user;
   }
@@ -100,6 +109,7 @@ public class Ticket {
       ticket.setDescription(rs.getString("description"));
       ticket.setDate(rs.getString("ticketDate"));
       ticket.setClosed(rs.getBoolean("closed"));
+      ticket.setUsername(rs.getString("username"));
       ticket.setResponse(rs.getString("response"));
       ticket.setResponseUsername(rs.getString("responseUsername"));
       try {

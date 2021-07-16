@@ -7,7 +7,6 @@
 	</p>
 
 	<div class="list-group">
-		<a class="list-group-item list-group-item-action text-primary" href="/account">My Account</a>
 		<a class="list-group-item list-group-item-action text-primary" href="/login">Login</a>
 		<a class="list-group-item list-group-item-action text-primary" href="/register">User Registration</a>
 		<a class="list-group-item list-group-item-action text-primary" href="/adminRegister">Admin Registration</a>

@@ -20,11 +20,13 @@
     <c:choose>
       <c:when test="${user.category=='admin'}">
         <a class="list-group-item list-group-item-action text-primary" href="/tickets">View Support Tickets</a>
+        <a class="list-group-item list-group-item-action text-primary" href="/categories">Manage Clothing Categories</a>
       </c:when>
       <c:otherwise>
         <a class="list-group-item list-group-item-action text-primary" href="/createTicket">Create Support Ticket</a>
         <a class="list-group-item list-group-item-action text-primary" href="/tickets">View My Tickets</a>
 
+        <!--
         <c:choose>
           <c:when test="${user.category=='tailor'}">
             <a class="list-group-item list-group-item-action text-primary" href="/updateShop">Update Shop Details</a>
@@ -33,11 +35,11 @@
             <a class="list-group-item list-group-item-action text-primary" href="/order">Create Order</a>
           </c:when>
         </c:choose>
+        -->
 
-        <a class="list-group-item list-group-item-action text-primary" href="/logout">Log Out</a>
       </c:otherwise>
-
     </c:choose>
+    <a class="list-group-item list-group-item-action text-primary" href="/logout">Log Out</a>
   </div>
 
 </div>

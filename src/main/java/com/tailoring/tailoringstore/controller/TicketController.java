@@ -103,4 +103,82 @@ public class TicketController {
     ticketService.addTicketsToModel(user, model);
     return "tickets";
   }
+
+  @RequestMapping(value="/ticketRespond", method=RequestMethod.GET)
+  public String ticketRespond(@ModelAttribute("user") User loginUser, @RequestParam int ticketId, ModelMap model, HttpServletRequest req) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+
+    Ticket ticket = ticketService.getTicket(ticketId);
+    String error = null;
+
+    if (ticket == null) {
+      error = "Ticket not found";
+    } else if (!user.isAdmin()) {
+      error = "Only admins can respond to tickets";
+    } else if (ticket.getResponse() != null && ticket.getResponse().length() > 0) {
+      error = "You can't respond to a ticket more than once";
+    } else if (ticket.getClosed()) {
+      error = "The ticket has been closed";
+    }
+
+    if (error != null) {
+      model.put("error", "You can't respond to that ticket: " + error);
+      ticketService.addTicketsToModel(user, model);
+      return "tickets";
+    }
+
+    model.put("ticket", ticket);
+    return "ticketRespond";
+  }
+
+
+  @RequestMapping(value="/ticketRespond", method=RequestMethod.POST)
+  public String ticketRespondResponse(
+    @ModelAttribute("user") User loginUser, @ModelAttribute("ticket") Ticket ticket,
+    BindingResult result, ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+
+    if (result.hasErrors()) {
+      System.out.println("Result errors: " + result.getAllErrors().toString());
+      model.put("error", "Failed to respond to ticket. Please try again.");
+      ticketService.addTicketsToModel(user, model);
+      return "tickets";
+    }
+
+    Ticket storedTicket = ticketService.getTicket(ticket.getTicketId());
+    String error = null;
+
+    if (!user.isAdmin()) {
+      error = "Only admins can respond to tickets";
+    } else if (storedTicket == null) {
+      error = "The specified ticket could not be found";
+    } else if (storedTicket.getClosed()) {
+      error = "The ticket is closed";
+    } else if (storedTicket.getResponse() != null && storedTicket.getResponse().length() > 0) {
+      error = "You can't respond to a ticket more than once";
+    }
+
+    String ticketTitle = "ticket";
+    if (storedTicket != null) ticketTitle = storedTicket.getUsername() + "'s ticket";
+
+    if (error != null) {
+      model.put("error", "Failed to respond to " + ticketTitle + ": " + error);
+      ticketService.addTicketsToModel(user, model);
+      return "tickets";
+    }
+
+    if (ticketService.respond(ticket.getTicketId(), ticket.getResponse(), user)) {
+      model.put("message", "Ticket response sent to " + storedTicket.getUsername() + "!");
+    } else {
+      model.put("error", "Failed to respond to " + ticketTitle);
+    }
+
+    ticketService.addTicketsToModel(user, model);
+    return "tickets";
+  }
 }
