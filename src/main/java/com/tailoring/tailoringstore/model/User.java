@@ -4,14 +4,32 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class User {
-  private String firstName;
-  private String lastName;
-
   private String username;
   private String password;
 
-  public User() {
-    super();
+  private String firstName;
+  private String lastName;
+
+  private String dateOfBirth;
+  private String gender;
+
+  private String contactNumber;
+  private String category;
+
+  public String getUsername() {
+    return this.username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public String getFirstName() {
@@ -30,19 +48,43 @@ public class User {
     this.lastName = lastName;
   }
 
-  public String getUsername() {
-    return this.username;
+  public String getDateOfBirth() {
+    return dateOfBirth;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setDateOfBirth(String dateOfBirth) {
+    this.dateOfBirth = dateOfBirth;
   }
 
-  public String getPassword() {
-    return this.password;
+  public String getGender() {
+    return gender;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
+
+  public String getContactNumber() {
+    return contactNumber;
+  }
+
+  public void setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  public boolean isTailor() {
+    return "tailor".equals(category);
+  }
+
+  public boolean isCustomer() {
+    return !isTailor();
   }
 }
