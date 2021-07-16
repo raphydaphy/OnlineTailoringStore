@@ -92,28 +92,14 @@ public class UserController {
   }
 
   @RequestMapping("/account")
-  public String account(@ModelAttribute("user") User user, ModelMap model, HttpServletRequest req) {
-    String username;
+  public String account(@ModelAttribute("user") User loginUser, ModelMap model, HttpServletRequest req) {
+    User user = userService.addUserToModel(model, req);
+    return user != null ? "account" : "login";
+  }
 
-    try {
-      username = (String) req.getSession().getAttribute("user");
-    } catch (Exception e) {
-      model.put("error", "Please log in to continue");
-      return "login";
-    }
-
-    if (username == null) {
-      model.put("error", "Please log in to continue");
-      return "login";
-    }
-
-    User signedInUser = userService.getUser(username);
-    if (signedInUser == null) {
-      model.put("error", "Invalid login.");
-      return "login";
-    }
-
-    model.put("user", signedInUser);
-    return "account";
+  @RequestMapping("/logout")
+  public String logout(HttpServletRequest req) {
+    req.getSession().removeAttribute("user");
+    return "index";
   }
 }

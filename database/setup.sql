@@ -43,3 +43,17 @@ CREATE TABLE `users` (
     category ENUM("customer", "tailor", "admin") NOT NULL DEFAULT "customer",
     PRIMARY KEY (username)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `tickets` (
+    `ticketId` INT NOT NULL AUTO_INCREMENT,
+    `issue` VARCHAR(64) NOT NULL,
+    `description` TEXT NOT NULL,
+    `ticketDate` DATE NOT NULL DEFAULT CURRENT_DATE,
+    `username` VARCHAR(32) NOT NULL,
+    `response` TEXT,
+    `responseUsername` VARCHAR(32),
+    `closed` BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (ticketId),
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (responseUsername) REFERENCES users(username)
+) ENGINE=InnoDB;

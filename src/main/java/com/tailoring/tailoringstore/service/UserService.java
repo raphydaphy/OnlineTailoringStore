@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.ModelMap;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -64,5 +66,23 @@ public class UserService {
     }
 
     return new UserResponse(existingUser);
+  }
+
+  public User addUserToModel(ModelMap model, HttpServletRequest req) {
+    String username = (String) req.getSession().getAttribute("user");
+
+    if (username == null) {
+      model.put("error", "Please log in to continue");
+      return null;
+    }
+
+    User user = getUser(username);
+    if (user == null) {
+      model.put("error", "Invalid login.");
+      return null;
+    }
+
+    model.put("user", user);
+    return user;
   }
 }

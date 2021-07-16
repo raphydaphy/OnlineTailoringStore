@@ -6,15 +6,14 @@
 		Don't have an account? <a href="/register">Register now</a>!
 	</p>
 
-	<%
-		String error = (String) request.getAttribute("error");
-		String message = (String) request.getAttribute("message");
-		if(error != null) {
-			out.print("<p class='text-warning'>" + error + "</p>");
-		} else if (message != null) {
-			out.print("<p class='text-info'>" + message + "</p>");
-		}
-	%>
+	<c:choose>
+		<c:when test="${error != null}">
+			<p class="text-warning">${error}</p>
+		</c:when>
+		<c:when test="${message != null}">
+			<p class="text-info">${message}</p>
+		</c:when>
+	</c:choose>
 
 	<form:form method="post" action="/login" modelAttribute="user">
 		<div class="form-group">

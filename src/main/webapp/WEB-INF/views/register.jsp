@@ -6,12 +6,11 @@
     Already have an account? <a href="/login">Login now</a>!
   </p>
 
-  <%
-    String error = (String) request.getAttribute("error");
-    if(error != null) {
-      out.print("<p class='text-warning'>" + error + "</p>");
-    }
-  %>
+  <c:choose>
+    <c:when test="${error != null}">
+      <p class="text-warning">${error}</p>
+    </c:when>
+  </c:choose>
 
   <form:form method="post" action="/register" modelAttribute="user">
     <div class="row">
