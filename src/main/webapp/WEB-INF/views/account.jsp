@@ -21,6 +21,7 @@
       <c:when test="${user.category=='admin'}">
         <a class="list-group-item list-group-item-action text-primary" href="/tickets">View Support Tickets</a>
         <a class="list-group-item list-group-item-action text-primary" href="/categories">Manage Clothing Categories</a>
+        <a class="list-group-item list-group-item-action text-primary" href="/subcategories">Manage Clothing Subcategories</a>
       </c:when>
       <c:otherwise>
         <a class="list-group-item list-group-item-action text-primary" href="/createTicket">Create Support Ticket</a>

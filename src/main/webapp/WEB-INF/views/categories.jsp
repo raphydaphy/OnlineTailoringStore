@@ -16,7 +16,7 @@
 
   <form:form method="post" action="/createCategory" modelAttribute="category">
     <div class="row align-items-center my-3">
-      <div class="col">
+      <div class="col align-items-center">
         <label for="name">Category Name</label>
       </div>
       <div class="col-6">

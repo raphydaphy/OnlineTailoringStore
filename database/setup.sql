@@ -63,3 +63,11 @@ CREATE TABLE `categories` (
     `categoryName` VARCHAR(64) NOT NULL,
     PRIMARY KEY (categoryId)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `subcategories` (
+    `subcategoryId` INT NOT NULL AUTO_INCREMENT,
+    `subcategoryName`VARCHAR(64) NOT NULL,
+    `categoryId` INT NOT NULL,
+    PRIMARY KEY (subcategoryId),
+    FOREIGN KEY (categoryId) REFERENCES categories(categoryId)
+) ENGINE=InnoDB;
