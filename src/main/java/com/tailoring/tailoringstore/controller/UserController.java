@@ -52,6 +52,9 @@ public class UserController {
     UserResponse response = userService.login(user);
     if (response.hasError()) {
       model.put("error", response.getError());
+      if (response.getError().equals("password")) {
+        model.put("username", user.getUsername());
+      }
       return "login";
     }
 
@@ -185,6 +188,34 @@ public class UserController {
     return "forgotUsername";
   }
 
+  @RequestMapping(value="/forgotPassword", method=RequestMethod.GET)
+  public String resetPassword(
+    @ModelAttribute("user") User loginUser,
+    @ModelAttribute("securityQuestions") SecurityQuestions securityQuestions,
+    @RequestParam String username,
+    ModelMap model
+  ) {
+    User user = userService.getUser(username);
+    if (user == null) {
+      model.put("error", "username");
+      return "login";
+    }
+
+    model.put("username", username);
+    List<SecurityQuestion> questions = userService.getSecurityQuestions(user);
+    if (questions.size() != 3) {
+      model.put("error", "You haven't set any security questions for your account, so it's impossible to reset your password.");
+      return "login";
+    }
+
+    User tmpUser = new User();
+    tmpUser.setUsername(username);
+
+    model.put("questions", questions);
+    model.put("user", tmpUser);
+    return "answerSecurityQuestions";
+  }
+
   @RequestMapping(value="/forgotUsername", method=RequestMethod.POST)
   public String forgotUsernameResponse(
     @ModelAttribute("user") User user,
@@ -213,12 +244,6 @@ public class UserController {
     return "answerSecurityQuestions";
   }
 
-  @RequestMapping(value="/forgotPassword", method=RequestMethod.GET)
-  public String resetPassword(@ModelAttribute("securityQuestions") SecurityQuestions securityQuestions, @RequestParam String username, ModelMap model) {
-    // TODO: reset password
-    return "forgotUsername";
-  }
-
   @RequestMapping(value="/answerSecurityQuestions", method=RequestMethod.POST)
   public String answerSecurityQuestions(
     @ModelAttribute("user") User loginUser, @ModelAttribute("securityQuestions") SecurityQuestions securityQuestions, ModelMap model
@@ -238,7 +263,6 @@ public class UserController {
       return "login";
     }
 
-
     List<SecurityQuestion> realQuestions = userService.getSecurityQuestions(user);
     List<SecurityQuestion> submittedQuestions = securityQuestions.getQuestionList();
 
@@ -251,17 +275,12 @@ public class UserController {
       boolean matched = false;
       for (SecurityQuestion submittedQuestion : submittedQuestions) {
         if (submittedQuestion.getPromptId() == realQuestion.getPromptId()) {
-          System.out.println(submittedQuestion.getPromptId() + " == " + realQuestion.getPromptId());
-          matched = true;
-
           if (!submittedQuestion.getAnswer().equalsIgnoreCase(realQuestion.getAnswer())) {
             model.put("error", "One or more of your answers was incorrect!");
             return "answerSecurityQuestions";
           }
-
+          matched = true;
           break;
-        } else {
-          System.out.println(submittedQuestion.getPromptId() + " != " + realQuestion.getPromptId());
         }
       }
       if (!matched) {
@@ -270,13 +289,56 @@ public class UserController {
       }
     }
 
-    if (!forPassword) {
-      model.put("message", "Your username is " + user.getUsername());
+    model.put("username", user.getUsername());
+    if (forPassword) return "resetPassword";
+
+    model.put("message", "Your username is " + user.getUsername());
+    return "login";
+  }
+
+  @RequestMapping(value="/resetPassword", method=RequestMethod.POST)
+  public String resetPassword(
+    @ModelAttribute("user") User loginUser, @ModelAttribute("securityQuestions") SecurityQuestions securityQuestions, ModelMap model
+  ) {
+    User user = userService.getUser(securityQuestions.getUsername());
+
+    if (user == null) {
+      model.put("error", "Failed to reset your password: An unexpected error occurred");
       return "login";
     }
 
-    // TODO
-    model.put("message", "Password reset is unimplemented..");
+    List<SecurityQuestion> realQuestions = userService.getSecurityQuestions(user);
+    List<SecurityQuestion> submittedQuestions = securityQuestions.getQuestionList();
+
+    model.put("username", securityQuestions.getUsername());
+    model.put("questions", realQuestions);
+
+    for (SecurityQuestion realQuestion : realQuestions) {
+      boolean matched = false;
+      for (SecurityQuestion submittedQuestion : submittedQuestions) {
+        if (submittedQuestion.getPromptId() == realQuestion.getPromptId()) {
+          if (!submittedQuestion.getAnswer().equalsIgnoreCase(realQuestion.getAnswer())) {
+            model.put("error", "One or more of your answers was incorrect!");
+            return "answerSecurityQuestions";
+          }
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) {
+        model.put("error", "You didn't answer all of your security questions! (" + realQuestion.getQuestion() + ")");
+        return "answerSecurityQuestions";
+      }
+    }
+
+    model.put("username", user.getUsername());
+
+    if (userService.resetPassword(user.getUsername(), securityQuestions.getNewPassword())) {
+      model.put("message", "Your password has been reset!");
+    } else {
+      model.put("error", "Failed to reset your password");
+    }
+
     return "login";
   }
 }

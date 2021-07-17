@@ -6,8 +6,9 @@ import java.util.List;
 public class SecurityQuestions {
   private String username;
   private String email;
-
   private String contactNumber;
+
+  private String newPassword;
 
   private SecurityQuestion firstQuestion;
   private SecurityQuestion secondQuestion;
@@ -35,6 +36,14 @@ public class SecurityQuestions {
 
   public void setContactNumber(String contactNumber) {
     this.contactNumber = contactNumber;
+  }
+
+  public String getNewPassword() {
+    return newPassword;
+  }
+
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
   }
 
   public SecurityQuestion getFirstQuestion() {

@@ -7,8 +7,21 @@
 	</p>
 
 	<c:choose>
+
 		<c:when test="${error != null}">
-			<p class="text-warning">${error}</p>
+			<p class="text-warning">
+				<c:choose>
+					<c:when test="${error == 'username'}">
+						Invalid username. If you've forgotten your username, you can <a href="/forgotUsername">retrieve your username here</a>.
+					</c:when>
+					<c:when test="${error == 'password'}">
+						Incorrect password. If you've forgotten your password, you can <a href="/forgotPassword?username=${username}">reset it here</a>.
+					</c:when>
+					<c:otherwise>
+						${error}
+					</c:otherwise>
+				</c:choose>
+			</p>
 		</c:when>
 		<c:when test="${message != null}">
 			<p class="text-info">${message}</p>
@@ -18,7 +31,7 @@
 	<form:form method="post" action="/login" modelAttribute="user">
 		<div class="form-group">
 			<label for="username">Username</label>
-			<form:input path="username" name="username" id="username" cssClass="form-control" />
+			<form:input path="username" name="username" id="username" value="${username}" cssClass="form-control" />
 		</div>
 		<div class="form-group">
 			<label for="password">Password</label>

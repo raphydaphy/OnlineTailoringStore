@@ -70,16 +70,32 @@ public class UserService {
     }
   }
 
+  public boolean resetPassword(String username, String newPassword) {
+    String sql = "UPDATE users SET passwordHash = ? WHERE username = ?";
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10, new SecureRandom());
+    String passwordHash = encoder.encode(newPassword);
+
+    try {
+      jdbcTemplate.update(sql, passwordHash, username);
+      return true;
+    } catch (Exception e) {
+      System.err.println("Failed to reset " + username + "'s password: " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
+  }
+
   public UserResponse login(User user) {
     User existingUser = getUser(user.getUsername());
 
     if (existingUser == null) {
-      return new UserResponse("Invalid username. If you've forgotten your username, you can <a href='/forgotUsername'>retrieve your username here</a>.");
+      return new UserResponse("username");
     }
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10, new SecureRandom());
     if (!encoder.matches(user.getPassword(), existingUser.getPasswordHash())) {
-      return new UserResponse("Incorrect password");
+      return new UserResponse("password");
     }
 
     return new UserResponse(existingUser);
