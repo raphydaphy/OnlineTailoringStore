@@ -12,6 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link href="webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="webjars/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css">
 
   <title>Online Tailoring Store</title>
 </head>

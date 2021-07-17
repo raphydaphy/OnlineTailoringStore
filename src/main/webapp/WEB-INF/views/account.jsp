@@ -34,12 +34,13 @@
             <a class="list-group-item list-group-item-action text-primary" href="/patterns">Manage Patterns</a>
           </c:when>
           <c:when test="${user.category=='customer'}">
-            <!-- <a class="list-group-item list-group-item-action text-primary" href="/order">Create Order</a> -->
+            <a class="list-group-item list-group-item-action text-primary" href="/tailors">Search Tailor Shops</a>
           </c:when>
         </c:choose>
 
       </c:otherwise>
     </c:choose>
+    <a class="list-group-item list-group-item-action text-primary" href="/orders">View Orders</a>
     <a class="list-group-item list-group-item-action text-primary" href="/logout">Log Out</a>
   </div>
 

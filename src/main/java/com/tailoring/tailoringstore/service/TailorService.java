@@ -2,6 +2,7 @@ package com.tailoring.tailoringstore.service;
 
 import com.tailoring.tailoringstore.model.Pattern;
 import com.tailoring.tailoringstore.model.TailorShop;
+import com.tailoring.tailoringstore.model.TailorShopSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service("tailorService")
 public class TailorService {
@@ -25,6 +27,26 @@ public class TailorService {
       System.err.println("Failed to get " + tailorUsername + "'s tailor shop: " + e.getMessage());
       e.printStackTrace();
       return null;
+    }
+  }
+
+  public List<TailorShop> getTailorShops(TailorShopSearch filter) {
+    String sql = "SELECT * from tailorShops ";
+    List<Object> args = new ArrayList<>();
+    if (filter.getDressType() != null && filter.getDressType().getDressTypeId() > 0) {
+      sql += "WHERE tailorUsername IN (SELECT tailorUsername FROM tailorDressTypes WHERE dressTypeId = ? AND enabled = TRUE) ";
+      args.add(filter.getDressType().getDressTypeId());
+    }
+    if (filter.getArea() != null && filter.getArea().length() > 0) {
+      sql += "WHERE LOWER(shopAddress) LIKE ? ";
+      args.add("%" + filter.getArea().toLowerCase() + "%");
+    }
+    try {
+      return jdbcTemplate.query(sql, args.toArray(), new TailorShop.TailorShopRowMapper());
+    } catch (Exception e) {
+      System.err.println("Failed to get tailor shops: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
     }
   }
 

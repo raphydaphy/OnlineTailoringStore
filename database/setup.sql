@@ -144,3 +144,46 @@ CREATE TABLE `patterns` (
     FOREIGN KEY (categoryId) REFERENCES categories(categoryId),
     FOREIGN KEY (dressTypeId) REFERENCES dressTypes(dressTypeId) 
 ) ENGINE=InnoDB;
+
+CREATE TABLE `orderStatus` (
+    `orderStatusId` INT NOT NULL,
+    `orderStatus` VARCHAR(32) NOT NULL,
+    PRIMARY KEY (orderStatusId)
+) ENGINE=InnoDB;
+
+INSERT INTO `orderStatus` (orderStatusId, orderStatus) VALUES
+(1, 'Order Placed');
+
+CREATE TABLE `orders` (
+    `orderId` INT NOT NULL AUTO_INCREMENT,
+    `customerUsername` VARCHAR(32) NOT NULL,
+    `tailorUsername` VARCHAR(32) NOT NULL,
+    `patternId` INT NOT NULL,
+    `placedDate` DATE NOT NULL DEFAULT CURRENT_DATE,
+    `expectedDeliveryDate` DATE NOT NULL,
+    `deliveredDate` DATE,
+    `orderStatusId` INT NOT NULL,
+    `amount` FLOAT(8, 2),
+    `orderNotes` TEXT NOT NULL,
+    `topFabric` VARCHAR(64) NOT NULL,
+    `topMaterial` VARCHAR(64) NOT NULL,
+    `topDuration` VARCHAR(64) NOT NULL,
+    `topLength` VARCHAR(64) NOT NULL,
+    `topQuantity` VARCHAR(64) NOT NULL,
+    `neck` VARCHAR(64) NOT NULL,
+    `waist` VARCHAR(64) NOT NULL,
+    `chest` VARCHAR(64) NOT NULL,
+    `shoulderLength` VARCHAR(64) NOT NULL,
+    `bottomFabric` VARCHAR(64) NOT NULL,
+    `bottomMaterial` VARCHAR(64) NOT NULL,
+    `bottomDuration` VARCHAR(64) NOT NULL,
+    `bottomLength` VARCHAR(64) NOT NULL,
+    `bottomQuantity` VARCHAR(64) NOT NULL,
+    `hip` VARCHAR(64) NOT NULL,
+    `kneeLength` VARCHAR(64) NOT NULL,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (customerUsername) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (patternId) REFERENCES patterns(patternId) ON DELETE CASCADE,
+    FOREIGN KEY (orderStatusID) REFERENCES orderStatus(orderStatusId) ON DELETE CASCADE
+) ENGINE=InnoDB;
