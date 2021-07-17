@@ -77,3 +77,11 @@ CREATE TABLE `dressTypes` (
     PRIMARY KEY(dressTypeId),
     FOREIGN KEY(subcategoryId) REFERENCES subcategories(subcategoryId) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE `tailorDressTypes` (
+    `dressTypeId` INT NOT NULL AUTO_INCREMENT,
+    `tailorUsername` VARCHAR(32) NOT NULL,
+    `enabled` BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY(dressTypeId, tailorUsername),
+    FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE
+) ENGINE=InnoDB;

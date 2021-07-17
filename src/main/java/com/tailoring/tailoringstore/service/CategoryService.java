@@ -1,12 +1,12 @@
 package com.tailoring.tailoringstore.service;
 
-import com.tailoring.tailoringstore.model.Category;
-import com.tailoring.tailoringstore.model.DressType;
-import com.tailoring.tailoringstore.model.Subcategory;
+import com.tailoring.tailoringstore.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +36,54 @@ public class CategoryService {
   }
 
   public List<DressType> getDressTypes() {
+    String sql = "SELECT d.*, s.subcategoryName from dressTypes d INNER JOIN subcategories s ON d.subcategoryId = s.subcategoryId ORDER BY s.subcategoryName, d.dressTypeName";
     try {
-      return jdbcTemplate.query("SELECT d.*, s.subcategoryName from dressTypes d INNER JOIN subcategories s ON d.subcategoryId = s.subcategoryId", new DressType.DressTypeRowMapper());
+      return jdbcTemplate.query(sql, new DressType.DressTypeRowMapper(false));
     } catch (Exception e) {
       System.err.println("Failed to get dress types: " + e.getMessage());
       e.printStackTrace();
       return new ArrayList<>();
+    }
+  }
+
+  public List<DressType> getTailorDressTypes(String tailorUsername) {
+    String sql = "SELECT d.*, s.subcategoryName, t.enabled from dressTypes d INNER JOIN subcategories s ON d.subcategoryId = s.subcategoryId ";
+    sql += "LEFT JOIN (SELECT * FROM tailorDressTypes WHERE tailorUsername = ?) t ON d.dressTypeId = t.dressTypeId ORDER BY s.subcategoryName, d.dressTypeName";
+    try {
+      return jdbcTemplate.query(sql, new Object[]{tailorUsername}, new DressType.DressTypeRowMapper(true));
+    } catch (Exception e) {
+      System.err.println("Failed to get tailor dress types: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+  }
+
+  public TailorDressType getTailorDressPreference(String tailorUsername, int dressTypeId){
+    String sql = "SELECT * FROM tailorDressTypes WHERE tailorUsername = ? AND dressTypeId = ?";
+    try {
+      List<TailorDressType> tailorDressTypes = jdbcTemplate.query(sql, new Object[]{tailorUsername, dressTypeId}, new TailorDressType.TailorDressTypeRowMapper());
+      return tailorDressTypes.size() == 0 ? null : tailorDressTypes.get(0);
+    } catch (Exception e) {
+      System.err.println("Failed to get tailor dress type setting: " + e.getMessage());
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  public boolean setTailorDressTypePreference(String tailorUsername, int dressTypeId, boolean enabled) {
+    TailorDressType existing = getTailorDressPreference(tailorUsername, dressTypeId);
+    String sql = "INSERT INTO tailorDressTypes (enabled, dressTypeId, tailorUsername) VALUES (?, ?, ?)";
+    if (existing != null) {
+      if (existing.isEnabled() == enabled) return true;
+      sql = "UPDATE tailorDressTypes SET enabled = ? WHERE dressTypeId = ? AND tailorUsername = ?";
+    }
+    try {
+      jdbcTemplate.update(sql, enabled, dressTypeId, tailorUsername);
+      return true;
+    } catch (DataAccessException e) {
+      System.err.println("Failed to update tailor dress type setting: " + e.getMessage());
+      e.printStackTrace();
+      return false;
     }
   }
 

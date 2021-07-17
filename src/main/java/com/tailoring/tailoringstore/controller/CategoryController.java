@@ -1,9 +1,6 @@
 package com.tailoring.tailoringstore.controller;
 
-import com.tailoring.tailoringstore.model.Category;
-import com.tailoring.tailoringstore.model.DressType;
-import com.tailoring.tailoringstore.model.Subcategory;
-import com.tailoring.tailoringstore.model.User;
+import com.tailoring.tailoringstore.model.*;
 import com.tailoring.tailoringstore.service.CategoryService;
 import com.tailoring.tailoringstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +49,44 @@ public class CategoryController {
   ) {
     User user = userService.addUserToModel(model, req);
     if (user == null) return "login";
-    else if (!user.isAdmin()) {
-      model.put("error", "You must be an admin to manage dress types!");
+    else if (!user.isAdmin() && !user.isTailor()) {
+      model.put("error", "Customers are not allowed to manage dress types!");
       return "account";
     }
 
     model.put("subcategories", categoryService.getSubcategories());
-    model.put("dressTypes", categoryService.getDressTypes());
+
+    if (user.isTailor()) model.put("dressTypes", categoryService.getTailorDressTypes(user.getUsername()));
+    else model.put("dressTypes", categoryService.getDressTypes());
+    return "dressTypes";
+  }
+
+  @RequestMapping(value="/toggleDressType", method=RequestMethod.GET)
+  public String toggleDressType(
+    @ModelAttribute("user") User loginUser, @RequestParam int dressTypeId,
+    ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+    if (!user.isTailor()) {
+      model.put("error", "Only tailors can enable/disable dress types!");
+      return "account";
+    }
+
+    model.put("subcategories", categoryService.getSubcategories());
+
+    TailorDressType existing = categoryService.getTailorDressPreference(user.getUsername(), dressTypeId);
+    boolean enabled = false;
+    if (existing != null) enabled = existing.isEnabled();
+
+    if (categoryService.setTailorDressTypePreference(user.getUsername(), dressTypeId, !enabled)) {
+      model.put("message", "Dress Type preference updated successfully!");
+    } else {
+      model.put("error", "Failed to toggle dress type preference");
+    }
+
+    model.put("dressTypes", categoryService.getTailorDressTypes(user.getUsername()));
     return "dressTypes";
   }
 

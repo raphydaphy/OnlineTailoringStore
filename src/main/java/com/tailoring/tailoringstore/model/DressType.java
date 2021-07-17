@@ -14,6 +14,8 @@ public class DressType {
   private int subcategoryId;
   private String subcategoryName;
 
+  private boolean enabled;
+
   public int getDressTypeId() {
     return dressTypeId;
   }
@@ -46,7 +48,21 @@ public class DressType {
     this.subcategoryName = subcategoryName;
   }
 
+  public boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
   public static class DressTypeRowMapper implements RowMapper<DressType> {
+    private final boolean forTailor;
+
+    public DressTypeRowMapper(boolean forTailor) {
+      this.forTailor = forTailor;
+    }
+
     @Override
     public DressType mapRow(ResultSet rs, int rowNum) throws SQLException {
       DressType dressType = new DressType();
@@ -55,6 +71,14 @@ public class DressType {
 
       dressType.setSubcategoryId(rs.getInt("subcategoryId"));
       dressType.setSubcategoryName(rs.getString("subcategoryName"));
+
+      if (this.forTailor) {
+        try {
+          dressType.setEnabled(rs.getBoolean("enabled"));
+        } catch (SQLException err) {
+          dressType.setEnabled(false);
+        }
+      }
       return dressType;
     }
   }
