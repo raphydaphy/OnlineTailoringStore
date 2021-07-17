@@ -1,5 +1,6 @@
 package com.tailoring.tailoringstore.model;
 
+import com.tailoring.tailoringstore.util.Helper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class Order {
   private String expectedDeliveryDate;
   private String deliveredDate;
 
-  private String orderStatusId;
+  private int orderStatusId;
   private String orderStatus;
 
   private float amount;
@@ -42,6 +43,8 @@ public class Order {
   private String bottomQuantity;
   private String hip;
   private String kneeLength;
+
+  private String review;
 
   public int getOrderId() {
     return orderId;
@@ -107,11 +110,11 @@ public class Order {
     this.deliveredDate = deliveredDate;
   }
 
-  public String getOrderStatusId() {
+  public int getOrderStatusId() {
     return orderStatusId;
   }
 
-  public void setOrderStatusId(String orderStatusId) {
+  public void setOrderStatusId(int orderStatusId) {
     this.orderStatusId = orderStatusId;
   }
 
@@ -267,7 +270,21 @@ public class Order {
     this.orderNotes = orderNotes;
   }
 
+  public String getReview() {
+    return review;
+  }
+
+  public void setReview(String review) {
+    this.review = review;
+  }
+
   public static class OrderRowMapper implements RowMapper<Order> {
+    private boolean withReview;
+
+    public OrderRowMapper(boolean withReview) {
+      this.withReview = withReview;
+    }
+
     @Override
     public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
       Order order = new Order();
@@ -278,13 +295,15 @@ public class Order {
       order.setPatternId(rs.getInt("patternId"));
       order.setPatternName(rs.getString("patternName"));
 
-      order.setPlacedDate(rs.getString("placedDate"));
-      order.setExpectedDeliveryDate(rs.getString("expectedDeliveryDate"));
-      order.setDeliveredDate(rs.getString("deliveredDate"));
 
-      order.setOrderStatusId(rs.getString("orderStatusId"));
-      order.setOrderStatusId(rs.getString("orderStatus"));
+      order.setPlacedDate(Helper.bootstrapDate(rs.getString("placedDate")));
+      order.setExpectedDeliveryDate(Helper.bootstrapDate(rs.getString("expectedDeliveryDate")));
+      order.setDeliveredDate(Helper.bootstrapDate(rs.getString("deliveredDate")));
 
+      order.setOrderStatusId(rs.getInt("orderStatusId"));
+      order.setOrderStatus(rs.getString("orderStatus"));
+
+      order.setAmount(rs.getFloat("amount"));
       order.setOrderNotes(rs.getString("orderNotes"));
 
       order.setTopFabric(rs.getString("topFabric"));
@@ -306,6 +325,10 @@ public class Order {
 
       order.setShoulderLength(rs.getString("shoulderLength"));
       order.setKneeLength(rs.getString("kneeLength"));
+
+      if (withReview) {
+        order.setReview(rs.getString("review"));
+      }
 
       return order;
     }

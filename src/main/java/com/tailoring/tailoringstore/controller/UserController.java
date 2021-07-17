@@ -1,8 +1,8 @@
 package com.tailoring.tailoringstore.controller;
 
-import com.tailoring.tailoringstore.model.SecurityQuestion;
-import com.tailoring.tailoringstore.model.SecurityQuestions;
-import com.tailoring.tailoringstore.model.User;
+import com.tailoring.tailoringstore.model.*;
+import com.tailoring.tailoringstore.service.OrderService;
+import com.tailoring.tailoringstore.service.TailorService;
 import com.tailoring.tailoringstore.service.UserService;
 import com.tailoring.tailoringstore.util.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,12 @@ public class UserController {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private TailorService tailorService;
+
+  @Autowired
+  private OrderService orderService;
 
   @RequestMapping("/")
   public String home(ModelMap model, HttpServletRequest req) {
@@ -64,6 +70,17 @@ public class UserController {
     if (existingSecurityQuestions.size() == 0) {
       model.put("prompts", userService.getSecurityQuestionPrompts());
       return "/createSecurityQuestions";
+    }
+
+    if (response.getUser().isCustomer()) {
+      Order unreviewedOrder = orderService.getUnreviewedOrder(user);
+
+      if (unreviewedOrder != null) {
+        model.put("order", unreviewedOrder);
+        model.put("review", new Review());
+        model.put("shop", tailorService.getShop(unreviewedOrder.getTailorUsername()));
+        return "/writeReview";
+      }
     }
 
     return "redirect:/account";

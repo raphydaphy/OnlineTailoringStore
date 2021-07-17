@@ -152,7 +152,7 @@ CREATE TABLE `orderStatus` (
 ) ENGINE=InnoDB;
 
 INSERT INTO `orderStatus` (orderStatusId, orderStatus) VALUES
-(1, 'Order Placed');
+(1, 'Order Placed'), (2, 'Order Accepted'), (3, 'Order Complete');
 
 CREATE TABLE `orders` (
     `orderId` INT NOT NULL AUTO_INCREMENT,
@@ -186,4 +186,12 @@ CREATE TABLE `orders` (
     FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (patternId) REFERENCES patterns(patternId) ON DELETE CASCADE,
     FOREIGN KEY (orderStatusID) REFERENCES orderStatus(orderStatusId) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE `reviews` (
+    `orderId` INT NOT NULL,
+    `stars` TINYINT NOT NULL,
+    `review` TEXT NOT NULL,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (orderId) REFERENCES orders(orderId) ON DELETE CASCADE
 ) ENGINE=InnoDB;

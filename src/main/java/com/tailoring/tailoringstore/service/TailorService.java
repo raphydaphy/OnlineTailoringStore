@@ -38,7 +38,8 @@ public class TailorService {
       args.add(filter.getDressType().getDressTypeId());
     }
     if (filter.getArea() != null && filter.getArea().length() > 0) {
-      sql += "WHERE LOWER(shopAddress) LIKE ? ";
+      if (args.size() > 0) sql += "AND LOWER(shopAddress) LIKE ? ";
+      else sql += "WHERE LOWER(shopAddress) LIKE ? ";
       args.add("%" + filter.getArea().toLowerCase() + "%");
     }
     try {
