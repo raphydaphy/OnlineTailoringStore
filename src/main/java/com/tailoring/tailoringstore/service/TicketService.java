@@ -2,14 +2,11 @@ package com.tailoring.tailoringstore.service;
 
 import com.tailoring.tailoringstore.model.Ticket;
 import com.tailoring.tailoringstore.model.User;
-import com.tailoring.tailoringstore.struct.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 

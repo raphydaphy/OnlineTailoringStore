@@ -31,6 +31,7 @@
           <c:when test="${user.category=='tailor'}">
             <a class="list-group-item list-group-item-action text-primary" href="/updateShopDetails">Update Shop Details</a>
             <a class="list-group-item list-group-item-action text-primary" href="/dressTypes">Manage Dress Types</a>
+            <a class="list-group-item list-group-item-action text-primary" href="/patterns">Manage Patterns</a>
           </c:when>
           <c:when test="${user.category=='customer'}">
             <!-- <a class="list-group-item list-group-item-action text-primary" href="/order">Create Order</a> -->

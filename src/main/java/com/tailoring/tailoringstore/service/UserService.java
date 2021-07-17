@@ -2,9 +2,8 @@ package com.tailoring.tailoringstore.service;
 
 import com.tailoring.tailoringstore.model.SecurityQuestion;
 import com.tailoring.tailoringstore.model.SecurityQuestionPrompt;
-import com.tailoring.tailoringstore.model.SecurityQuestions;
 import com.tailoring.tailoringstore.model.User;
-import com.tailoring.tailoringstore.struct.UserResponse;
+import com.tailoring.tailoringstore.util.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

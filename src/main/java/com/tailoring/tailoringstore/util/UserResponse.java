@@ -1,4 +1,4 @@
-package com.tailoring.tailoringstore.struct;
+package com.tailoring.tailoringstore.util;
 
 import com.tailoring.tailoringstore.model.User;
 

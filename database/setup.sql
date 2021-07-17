@@ -129,3 +129,18 @@ CREATE TABLE `tailorShops` (
     PRIMARY KEY (tailorUsername),
     FOREIGN KEY (tailorUsername) REFERENCES users(username)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `patterns` (
+    `patternId` INT NOT NULL AUTO_INCREMENT,
+    `tailorUsername` VARCHAR(32) NOT NULL,
+    `categoryId` INT NOT NULL,
+    `dressTypeId` INT NOT NULL,
+    `name` VARCHAR(64) NOT NULL,
+    `description` TEXT NOT NULL,
+    `cost` FLOAT(8, 2) NOT NULL,
+    `imageData` MEDIUMBLOB NOT NULL,
+    PRIMARY KEY (patternId),
+    FOREIGN KEY (tailorUsername) REFERENCES users(username),
+    FOREIGN KEY (categoryId) REFERENCES categories(categoryId),
+    FOREIGN KEY (dressTypeId) REFERENCES dressTypes(dressTypeId) 
+) ENGINE=InnoDB;

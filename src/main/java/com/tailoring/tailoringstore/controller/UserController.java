@@ -1,13 +1,11 @@
 package com.tailoring.tailoringstore.controller;
 
 import com.tailoring.tailoringstore.model.SecurityQuestion;
-import com.tailoring.tailoringstore.model.SecurityQuestionPrompt;
 import com.tailoring.tailoringstore.model.SecurityQuestions;
 import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.service.UserService;
-import com.tailoring.tailoringstore.struct.UserResponse;
+import com.tailoring.tailoringstore.util.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class UserController {
   @RequestMapping("/")
   public String home(ModelMap model, HttpServletRequest req) {
     User user = userService.addUserToModel(model, req);
-    return user != null ? "account" : "index";
+    return user != null ? "redirect:/account" : "index";
   }
 
   @RequestMapping("/login")
@@ -46,7 +45,7 @@ public class UserController {
   ) {
     if (result.hasErrors()) {
       System.out.println("Result errors: " + result.getAllErrors().toString());
-      return "login";
+      return "/login";
     }
 
     UserResponse response = userService.login(user);
@@ -55,7 +54,7 @@ public class UserController {
       if (response.getError().equals("password")) {
         model.put("username", user.getUsername());
       }
-      return "login";
+      return "/login";
     }
 
     model.put("user", response.getUser());
@@ -64,10 +63,10 @@ public class UserController {
     List<SecurityQuestion> existingSecurityQuestions = userService.getSecurityQuestions(response.getUser());
     if (existingSecurityQuestions.size() == 0) {
       model.put("prompts", userService.getSecurityQuestionPrompts());
-      return "createSecurityQuestions";
+      return "/createSecurityQuestions";
     }
 
-    return "account";
+    return "redirect:/account";
   }
 
   @RequestMapping("/register")
@@ -88,6 +87,7 @@ public class UserController {
       return "register";
     } else {
       model.put("message", "New user created successfully!");
+      model.put("username", user.getUsername());
       return "login";
     }
   }
@@ -113,6 +113,7 @@ public class UserController {
       return "adminRegister";
     } else {
       model.put("message", "New admin created successfully!");
+      model.put("username", user.getUsername());
       return "login";
     }
   }
@@ -126,7 +127,7 @@ public class UserController {
   @RequestMapping("/logout")
   public String logout(HttpServletRequest req) {
     req.getSession().removeAttribute("user");
-    return "index";
+    return "redirect:/";
   }
 
   @RequestMapping("/createSecurityQuestions")
