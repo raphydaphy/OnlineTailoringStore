@@ -84,4 +84,31 @@ public class TailorService {
       return null;
     }
   }
+
+  public boolean deletePattern(int patternId) {
+    String sql = "DELETE FROM patterns WHERE patternId = ?";
+    try {
+      jdbcTemplate.update(sql, patternId);
+      return true;
+    } catch (Exception e) {
+      System.err.println("Failed to delete pattern #" + patternId + ": " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public boolean updatePattern(Pattern pattern) {
+    String sql = "UPDATE patterns SET categoryId = ?, dressTypeId = ?, `name` = ?, description = ?, cost = ? WHERE patternId = ?";
+    try {
+      jdbcTemplate.update(
+        sql, pattern.getCategory().getCategoryId(), pattern.getDressType().getDressTypeId(),
+        pattern.getName(), pattern.getDescription(), pattern.getCost(), pattern.getPatternId()
+      );
+      return true;
+    }  catch (Exception e) {
+      System.err.println("Failed to update pattern #" + pattern.getPatternId() + ": " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
+  }
 }

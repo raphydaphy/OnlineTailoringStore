@@ -26,7 +26,7 @@
             <h3 class="h5 mt-0">${pattern.name}</h3>
             <p>${pattern.description}</p>
             <p>
-              <strong>Cost: </strong>$${pattern.cost}<br />
+              <strong>Cost: </strong>$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${pattern.cost}"/><br />
               <strong>Category: </strong>${pattern.category.name}<br />
               <strong>Subcategory: </strong>${pattern.dressType.subcategoryName}<br />
               <strong>Dress Type: </strong>${pattern.dressType.name}
