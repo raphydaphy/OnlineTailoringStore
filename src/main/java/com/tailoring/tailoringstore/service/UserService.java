@@ -1,5 +1,8 @@
 package com.tailoring.tailoringstore.service;
 
+import com.tailoring.tailoringstore.model.SecurityQuestion;
+import com.tailoring.tailoringstore.model.SecurityQuestionPrompt;
+import com.tailoring.tailoringstore.model.SecurityQuestions;
 import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.struct.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.ui.ModelMap;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("userService")
@@ -84,5 +88,38 @@ public class UserService {
 
     model.put("user", user);
     return user;
+  }
+
+  public List<SecurityQuestionPrompt> getSecurityQuestionPrompts() {
+    try {
+      return jdbcTemplate.query("SELECT * FROM securityQuestionPrompts", new SecurityQuestionPrompt.SecurityQuestionPromptRowMapper());
+    } catch (Exception e) {
+      System.err.println("Failed to get security question prompts: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+  }
+
+  public List<SecurityQuestion> getSecurityQuestions(User user) {
+    String sql = "SELECT s.*, p.question FROM securityQuestions s INNER JOIN securityQuestionPrompts p ON s.promptId = p.promptID WHERE s.username = ?";
+    try {
+      return jdbcTemplate.query(sql, new Object[] {user.getUsername()}, new SecurityQuestion.SecurityQuestionRowMapper());
+    } catch (Exception e) {
+      System.err.println("Failed to get " + user.getUsername() + "'s security questions: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+  }
+
+  public boolean addSecurityQuestion(User user, SecurityQuestion question) {
+    String sql = "INSERT INTO securityQuestions (username, promptId, answer) VALUES (?, ?, ?)";
+    try {
+      jdbcTemplate.update(sql, user.getUsername(), question.getPromptId(), question.getAnswer());
+      return true;
+    } catch (Exception e) {
+      System.err.println("Failed to add security question: " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
   }
 }

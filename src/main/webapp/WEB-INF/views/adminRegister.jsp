@@ -1,5 +1,5 @@
 <%@ include file="common/header.jsp" %>
-<div class="container mt-3">
+<div class="container my-3">
   <h1>Online Tailoring Store</h1>
   <p>
     Create a new admin account using to the form below.<br />

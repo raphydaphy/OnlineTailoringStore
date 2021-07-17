@@ -1,5 +1,8 @@
 package com.tailoring.tailoringstore.controller;
 
+import com.tailoring.tailoringstore.model.SecurityQuestion;
+import com.tailoring.tailoringstore.model.SecurityQuestionPrompt;
+import com.tailoring.tailoringstore.model.SecurityQuestions;
 import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.service.UserService;
 import com.tailoring.tailoringstore.struct.UserResponse;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -33,7 +38,11 @@ public class UserController {
   }
 
   @RequestMapping(value="/login", method=RequestMethod.POST)
-  public String loginResponse(@ModelAttribute("user") User user, BindingResult result, ModelMap model, HttpServletRequest req) {
+  public String loginResponse(
+    @ModelAttribute("user") User user,
+    @ModelAttribute("securityQuestions") SecurityQuestions newSecurityQuestions,
+    BindingResult result, ModelMap model, HttpServletRequest req
+  ) {
     if (result.hasErrors()) {
       System.out.println("Result errors: " + result.getAllErrors().toString());
       return "login";
@@ -43,11 +52,18 @@ public class UserController {
     if (response.hasError()) {
       model.put("error", response.getError());
       return "login";
-    } else {
-      model.put("user", response.getUser());
-      req.getSession().setAttribute("user", response.getUser().getUsername());
-      return "account";
     }
+
+    model.put("user", response.getUser());
+    req.getSession().setAttribute("user", response.getUser().getUsername());
+
+    List<SecurityQuestion> existingSecurityQuestions = userService.getSecurityQuestions(response.getUser());
+    if (existingSecurityQuestions.size() == 0) {
+      model.put("prompts", userService.getSecurityQuestionPrompts());
+      return "createSecurityQuestions";
+    }
+
+    return "account";
   }
 
   @RequestMapping("/register")
@@ -107,5 +123,59 @@ public class UserController {
   public String logout(HttpServletRequest req) {
     req.getSession().removeAttribute("user");
     return "index";
+  }
+
+  @RequestMapping("/createSecurityQuestions")
+  public String createSecurityQuestions(
+    @ModelAttribute("user") User loginUser,
+    @ModelAttribute("securityQuestions") SecurityQuestions newSecurityQuestions,
+    ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+    List<SecurityQuestion> questions = userService.getSecurityQuestions(user);
+    if (questions.size() > 0) {
+      model.put("error", "You've already chosen your security questions!");
+      return "account";
+    }
+
+    model.put("prompts", userService.getSecurityQuestionPrompts());
+    return "createSecurityQuestions";
+  }
+
+  @RequestMapping(value="/createSecurityQuestions",method=RequestMethod.POST)
+  public String createSecurityQuestionsResponse(
+    @ModelAttribute("user") User loginUser,
+    @ModelAttribute("securityQuestions") SecurityQuestions newSecurityQuestions,
+    ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+    List<SecurityQuestion> existingQuestions = userService.getSecurityQuestions(user);
+    if (existingQuestions.size() > 0) {
+      model.put("error", "You've already chosen your security questions!");
+      return "account";
+    }
+
+    List<Integer> promptIds = new ArrayList<>();
+    List<SecurityQuestion> securityQuestions = newSecurityQuestions.getQuestionList();
+
+    for (SecurityQuestion question : securityQuestions) {
+      if (promptIds.contains(question.getPromptId())) {
+        model.put("error", "You can't use the same question twice!");
+        model.put("prompts", userService.getSecurityQuestionPrompts());
+        return "createSecurityQuestions";
+      }
+      promptIds.add(question.getPromptId());
+    }
+
+    for (SecurityQuestion question : securityQuestions) {
+      userService.addSecurityQuestion(user, question);
+    }
+
+    model.put("message", "Your new security questions have been saved");
+    return "account";
   }
 }

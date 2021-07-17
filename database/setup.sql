@@ -85,3 +85,35 @@ CREATE TABLE `tailorDressTypes` (
     PRIMARY KEY(dressTypeId, tailorUsername),
     FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE `securityQuestionPrompts` (
+    `promptId` INT NOT NULL AUTO_INCREMENT,
+    `question` VARCHAR(64) NOT NULL,
+    PRIMARY KEY (promptId)
+) ENGINE=InnoDB;
+
+INSERT INTO `securityQuestionPrompts` (question) VALUES
+("In what city where you born?"),
+("What is the name of your favorite pet?"),
+("What is your mother's maiden name?"),
+("What high school did you attend?"),
+("What was the make of your first car?"),
+("What was your favorite food as a child?"),
+("Where did you meet your spouse?"),
+("How old were you when you had your first kiss?"),
+("What was your childhood nickname?"),
+("What street did you live on in third grade?"),
+("What was the name of the company of your first job?"),
+("What is the name of a college you applied to but didn't attend?"),
+("In what city or town was your first job?"),
+("In what city does your nearest sibling live?"),
+("What was the name of your favorite stuffed animal?");
+
+CREATE TABLE `securityQuestions` (
+    `username` VARCHAR(32) NOT NULL,
+    `promptId` INT NOT NULL,
+    `answer` VARCHAR(64) NOT NULL,
+    PRIMARY KEY(username, promptId),
+    FOREIGN KEY(username) REFERENCES users(username),
+    FOREIGN KEY(promptID) REFERENCES securityQuestionPrompts(promptId)
+) ENGINE=InnoDB;
