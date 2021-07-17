@@ -22,7 +22,7 @@
 
     <div class="form-group">
       <label for="mockUsername">Username</label>
-      <input id="mockUsername" value="${username}" class="form-control" disabled="true" />
+      <input id="mockUsername" value="${username}" class="form-control" readonly="readonly" />
     </div>
     <div class="form-group">
       <label for="newPassword">Password</label>

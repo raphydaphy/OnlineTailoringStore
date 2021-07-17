@@ -117,3 +117,15 @@ CREATE TABLE `securityQuestions` (
     FOREIGN KEY(username) REFERENCES users(username),
     FOREIGN KEY(promptID) REFERENCES securityQuestionPrompts(promptId)
 ) ENGINE=InnoDB;
+
+CREATE TABLE `tailorShops` (
+    `tailorUsername` VARCHAR(32) NOT NULL,
+    `shopName` VARCHAR(64) NOT NULL,
+    `shopAddress` VARCHAR(64) NOT NULL,
+    `shopContactNumber` VARCHAR(16) NOT NULL,
+    `shopWorkingHours` VARCHAR(32) NOT NULL,
+    `availableServices` VARCHAR(64) NOT NULL,
+    `courierAvailable` BOOLEAN NOT NULL,
+    PRIMARY KEY (tailorUsername),
+    FOREIGN KEY (tailorUsername) REFERENCES users(username)
+) ENGINE=InnoDB;

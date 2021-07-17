@@ -1,8 +1,11 @@
 package com.tailoring.tailoringstore.model;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 public class SecurityQuestions {
   private String username;
   private String email;

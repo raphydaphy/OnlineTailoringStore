@@ -29,7 +29,7 @@
 
         <c:choose>
           <c:when test="${user.category=='tailor'}">
-            <!-- <a class="list-group-item list-group-item-action text-primary" href="/updateShop">Update Shop Details</a> -->
+            <a class="list-group-item list-group-item-action text-primary" href="/updateShopDetails">Update Shop Details</a>
             <a class="list-group-item list-group-item-action text-primary" href="/dressTypes">Manage Dress Types</a>
           </c:when>
           <c:when test="${user.category=='customer'}">
