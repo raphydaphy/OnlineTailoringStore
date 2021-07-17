@@ -1,13 +1,41 @@
 package com.tailoring.tailoringstore.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SecurityQuestions {
+  private String username;
+  private String email;
+
+  private String contactNumber;
+
   private SecurityQuestion firstQuestion;
   private SecurityQuestion secondQuestion;
   private SecurityQuestion thirdQuestion;
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getContactNumber() {
+    return contactNumber;
+  }
+
+  public void setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
+  }
 
   public SecurityQuestion getFirstQuestion() {
     return firstQuestion;

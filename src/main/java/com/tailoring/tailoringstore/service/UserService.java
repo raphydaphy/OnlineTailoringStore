@@ -34,6 +34,19 @@ public class UserService {
     }
   }
 
+  public User getUserWithEmailOrNumber(String email, String contactNumber) {
+    try {
+      List<User> user = jdbcTemplate.query("SELECT * from users WHERE email = ? OR contactNumber = ?", new Object[]{email, contactNumber}, new User.UserRowMapper());
+      if (user.size() == 0) return null;
+
+      return user.get(0);
+    } catch (Exception e) {
+      System.err.println("Failed to get user from email/number: " + e.getMessage());
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public UserResponse addUser(User user) {
     User existingUser = getUser(user.getUsername());
     if (existingUser != null) {
@@ -61,7 +74,7 @@ public class UserService {
     User existingUser = getUser(user.getUsername());
 
     if (existingUser == null) {
-      return new UserResponse("Invalid username");
+      return new UserResponse("Invalid username. If you've forgotten your username, you can <a href='/forgotUsername'>retrieve your username here</a>.");
     }
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10, new SecureRandom());

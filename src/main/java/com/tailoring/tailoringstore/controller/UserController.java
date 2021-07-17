@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -177,5 +178,105 @@ public class UserController {
 
     model.put("message", "Your new security questions have been saved");
     return "account";
+  }
+
+  @RequestMapping("/forgotUsername")
+  public String forgotUsername(@ModelAttribute("user") User user, ModelMap model) {
+    return "forgotUsername";
+  }
+
+  @RequestMapping(value="/forgotUsername", method=RequestMethod.POST)
+  public String forgotUsernameResponse(
+    @ModelAttribute("user") User user,
+    @ModelAttribute("securityQuestions") SecurityQuestions securityQuestions,
+    ModelMap model
+  ) {
+    if ((user.getEmail() == null || user.getEmail().length() == 0) && (user.getContactNumber() == null || user.getContactNumber().length() == 0)) {
+      model.put("error", "Please enter your email or contact number to continue");
+      return "forgotUsername";
+    }
+
+    User foundUser = userService.getUserWithEmailOrNumber(user.getEmail(), user.getContactNumber());
+    if (foundUser == null) {
+      model.put("error", "There are no users that match those details!");
+      return "forgotUsername";
+    }
+
+    List<SecurityQuestion> questions = userService.getSecurityQuestions(foundUser);
+    if (questions.size() != 3) {
+      model.put("error", "You haven't set any security questions for your account, so it's impossible to retrieve your username.");
+      return "forgotUsername";
+    }
+
+    model.put("questions", questions);
+    model.put("user", user);
+    return "answerSecurityQuestions";
+  }
+
+  @RequestMapping(value="/forgotPassword", method=RequestMethod.GET)
+  public String resetPassword(@ModelAttribute("securityQuestions") SecurityQuestions securityQuestions, @RequestParam String username, ModelMap model) {
+    // TODO: reset password
+    return "forgotUsername";
+  }
+
+  @RequestMapping(value="/answerSecurityQuestions", method=RequestMethod.POST)
+  public String answerSecurityQuestions(
+    @ModelAttribute("user") User loginUser, @ModelAttribute("securityQuestions") SecurityQuestions securityQuestions, ModelMap model
+  ) {
+    boolean forPassword = true;
+    User user = userService.getUser(securityQuestions.getUsername());
+
+    if (user == null) {
+      forPassword = false;
+      user = userService.getUserWithEmailOrNumber(securityQuestions.getEmail(), securityQuestions.getContactNumber());
+    }
+
+    String action = forPassword ? "reset your password": "retrieve your username";
+
+    if (user == null) {
+      model.put("error", "Failed to " + action + ": An unexpected error occurred");
+      return "login";
+    }
+
+
+    List<SecurityQuestion> realQuestions = userService.getSecurityQuestions(user);
+    List<SecurityQuestion> submittedQuestions = securityQuestions.getQuestionList();
+
+    model.put("username", securityQuestions.getUsername());
+    model.put("email", securityQuestions.getEmail());
+    model.put("contactNumber", securityQuestions.getContactNumber());
+    model.put("questions", realQuestions);
+
+    for (SecurityQuestion realQuestion : realQuestions) {
+      boolean matched = false;
+      for (SecurityQuestion submittedQuestion : submittedQuestions) {
+        if (submittedQuestion.getPromptId() == realQuestion.getPromptId()) {
+          System.out.println(submittedQuestion.getPromptId() + " == " + realQuestion.getPromptId());
+          matched = true;
+
+          if (!submittedQuestion.getAnswer().equalsIgnoreCase(realQuestion.getAnswer())) {
+            model.put("error", "One or more of your answers was incorrect!");
+            return "answerSecurityQuestions";
+          }
+
+          break;
+        } else {
+          System.out.println(submittedQuestion.getPromptId() + " != " + realQuestion.getPromptId());
+        }
+      }
+      if (!matched) {
+        model.put("error", "You didn't answer all of your security questions! (" + realQuestion.getQuestion() + ")");
+        return "answerSecurityQuestions";
+      }
+    }
+
+    if (!forPassword) {
+      model.put("message", "Your username is " + user.getUsername());
+      return "login";
+    }
+
+    // TODO
+    model.put("message", "Password reset is unimplemented..");
+    return "login";
   }
 }
