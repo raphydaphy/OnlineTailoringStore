@@ -22,7 +22,7 @@
           <h3 class="card-title">${order.patternName}</h3>
           <p class="card-text mt-1 mb-3">
             <strong>Tailor Name: </strong> ${order.tailorUsername}<br />
-            <strong>Cost: </strong>$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/><br />
+            <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
             <strong>Creation Date: </strong>${order.placedDate}<br />
             <strong>Delivery Date: </strong>${order.deliveredDate}<br />
           </p>

@@ -30,7 +30,7 @@
               </c:if>
               <strong>Status: </strong>${order.orderStatus}<br />
               <c:if test="${order.amount > 0}">
-                <strong>Cost: </strong>$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/><br />
+                <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               </c:if>
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />

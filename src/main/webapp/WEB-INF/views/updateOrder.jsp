@@ -53,10 +53,10 @@
       <div class="col-sm form-group">
         <label for="amount">Order Cost</label>
         <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">$</div>
-          </div>
           <form:input path="amount" cssClass="form-control" required="true" type="number" step="0.01" value="${orderPattern.cost}" />
+          <div class="input-group-append">
+            <div class="input-group-text">INR</div>
+          </div>
         </div>
       </div>
     </div>

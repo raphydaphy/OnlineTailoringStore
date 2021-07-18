@@ -81,7 +81,7 @@
               <c:if test="${user.category != 'tailor'}">
                 <strong>Tailor Name: </strong> ${order.tailorUsername}<br />
               </c:if>
-              <strong>Cost: </strong>$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/><br />
+              <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />
               <strong>Notes: </strong>${order.orderNotes}
@@ -125,7 +125,7 @@
               <c:if test="${user.category != 'tailor'}">
                 <strong>Tailor Name: </strong> ${order.tailorUsername}<br />
               </c:if>
-              <strong>Cost: </strong>$<fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/><br />
+              <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Delivered Date: </strong>${order.deliveredDate}<br />
               <strong>Notes: </strong>${order.orderNotes}

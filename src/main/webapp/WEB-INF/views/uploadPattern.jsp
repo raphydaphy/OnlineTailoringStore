@@ -14,10 +14,10 @@
       <div class="col-sm form-group">
         <label for="cost">Pattern Cost</label>
         <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">$</div>
-          </div>
           <form:input path="cost" cssClass="form-control" required="true" type="number" step="0.01" />
+          <div class="input-group-append">
+            <div class="input-group-text">INR</div>
+          </div>
         </div>
       </div>
     </div>
