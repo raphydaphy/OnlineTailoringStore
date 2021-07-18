@@ -33,15 +33,27 @@
     <form:hidden path="customerUsername" value="${user.username}" />
     <form:hidden path="tailorUsername" value="${shop.tailorUsername}" />
     <form:hidden path="patternId" value="${orderPattern.patternId}" />
-    <div class="form-group">
-      <label for="expectedDeliveryDate">Expected Delivery Date</label>
-      <div class="input-group date" data-provide="datepicker">
-        <form:input cssClass="form-control" path="expectedDeliveryDate" required="true" />
-        <div class="input-group-addon">
-          <span class="glyphicon glyphicon-th"></span>
+    <div class="row">
+      <div class="col-sm form-group">
+        <label for="expectedDeliveryDate">Expected Delivery Date</label>
+        <div class="input-group date" data-provide="datepicker">
+          <form:input cssClass="form-control" path="expectedDeliveryDate" required="true" />
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-th"></span>
+          </div>
         </div>
       </div>
+      <c:if test="${shop.courierAvailable}">
+        <div class="col-sm form-group">
+          <label for="courier">Delivery Method</label>
+          <form:select path="courier" cssClass="form-control" required="true">
+            <option value="1">Courier</option>
+            <option value="0">Pickup</option>
+          </form:select>
+        </div>
+      </c:if>
     </div>
+
     <div class="row">
       <div class="col-sm form-group">
         <label for="topFabric">Top Fabric</label>

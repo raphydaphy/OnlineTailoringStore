@@ -41,7 +41,18 @@
               </c:if>
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />
-              <strong>Notes: </strong>${order.orderNotes}
+              <strong>Delivery  Method: </strong>
+              <c:choose>
+                <c:when test="${order.courier}">
+                  Courier
+                </c:when>
+                <c:otherwise>
+                  Pick Up
+                </c:otherwise>
+              </c:choose><br />
+              <c:if test="${order.orderNotes.length() > 0}">
+                <strong>Notes: </strong>${order.orderNotes}
+              </c:if>
             </p>
             <c:if test="${user.category == 'tailor'}">
               <a href="/acceptOrder?id=${order.orderId}" class="btn btn-primary">Accept Order</a>
@@ -84,11 +95,26 @@
               <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />
-              <strong>Notes: </strong>${order.orderNotes}
+              <c:choose>
+                <c:when test="${order.courier}">
+                  <strong>Delivery  Method: </strong> Courier<br />
+                  <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
+                </c:when>
+                <c:otherwise>
+                  <strong>Delivery  Method: </strong> Pick Up
+                </c:otherwise>
+              </c:choose>
+              <c:if test="${order.orderNotes.length() > 0}">
+                <br />
+                <strong>Notes: </strong>${order.orderNotes}
+              </c:if>
             </p>
             <c:if test="${user.category == 'tailor'}">
               <a href="/completeOrder?id=${order.orderId}" class="btn btn-primary">Complete Order</a>
               <a href="/updateOrder?id=${order.orderId}" class="btn btn-primary">Update Order</a>
+            </c:if>
+            <c:if test="${user.category == 'customer' && order.amount > 0 && order.courier && !order.paid && order.orderStatusId == 2}">
+              <a href="/pay?order=${order.orderId}" class="btn btn-primary">Make Payment</a>
             </c:if>
             <a href="/deleteOrder?id=${order.orderId}" class="btn btn-secondary">Delete Order</a>
           </div>
@@ -127,8 +153,11 @@
               </c:if>
               <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               <strong>Creation Date: </strong>${order.placedDate}<br />
-              <strong>Delivered Date: </strong>${order.deliveredDate}<br />
-              <strong>Notes: </strong>${order.orderNotes}
+              <strong>Delivered Date: </strong>${order.deliveredDate}
+              <c:if test="${order.orderNotes.length() > 0}">
+                <br />
+                <strong>Notes: </strong>${order.orderNotes}
+              </c:if>
 
               <c:if test="${order.review != null}">
                 <br />

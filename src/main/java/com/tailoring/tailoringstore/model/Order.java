@@ -27,6 +27,9 @@ public class Order {
   private float amount;
   private String orderNotes;
 
+  private boolean courier;
+  private boolean paid;
+
   private String topFabric;
   private String topMaterial;
   private String topDuration;
@@ -132,6 +135,22 @@ public class Order {
 
   public void setAmount(float amount) {
     this.amount = amount;
+  }
+
+  public boolean isCourier() {
+    return courier;
+  }
+
+  public void setCourier(boolean courier) {
+    this.courier = courier;
+  }
+
+  public boolean isPaid() {
+    return paid;
+  }
+
+  public void setPaid(boolean paid) {
+    this.paid = paid;
   }
 
   public String getTopFabric() {
@@ -279,10 +298,10 @@ public class Order {
   }
 
   public static class OrderRowMapper implements RowMapper<Order> {
-    private boolean withReview;
+    private boolean withExtras;
 
-    public OrderRowMapper(boolean withReview) {
-      this.withReview = withReview;
+    public OrderRowMapper(boolean withExtras) {
+      this.withExtras = withExtras;
     }
 
     @Override
@@ -306,6 +325,8 @@ public class Order {
       order.setAmount(rs.getFloat("amount"));
       order.setOrderNotes(rs.getString("orderNotes"));
 
+      order.setCourier(rs.getBoolean("courier"));
+
       order.setTopFabric(rs.getString("topFabric"));
       order.setTopMaterial(rs.getString("topMaterial"));
       order.setTopDuration(rs.getString("topDuration"));
@@ -326,8 +347,9 @@ public class Order {
       order.setShoulderLength(rs.getString("shoulderLength"));
       order.setKneeLength(rs.getString("kneeLength"));
 
-      if (withReview) {
+      if (withExtras) {
         order.setReview(rs.getString("review"));
+        order.setPaid(rs.getBoolean("paid"));
       }
 
       return order;

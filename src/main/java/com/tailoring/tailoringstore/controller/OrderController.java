@@ -360,7 +360,6 @@ public class OrderController {
     return "orders";
   }
 
-
   @RequestMapping("/completeOrder")
   public String completeOrder(
     @ModelAttribute("user") User loginUser, @RequestParam int id, ModelMap model, HttpServletRequest req
@@ -410,5 +409,60 @@ public class OrderController {
     }
 
     return "account";
+  }
+
+  @RequestMapping("/pay")
+  public String pay(
+    @ModelAttribute("user") User loginUser, @ModelAttribute("payment") Payment payment,
+    @RequestParam("order") int orderId, ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+    Order order = orderService.getOrder(orderId);
+
+    if (!user.isCustomer()) {
+      model.put("error", "Only customers can pay for orders");
+    } else if (!order.getCustomerUsername().equals(user.getUsername())) {
+      model.put("error", "You don't have permission to pay for that order!");
+    } else if (!order.isCourier()) {
+      model.put("error", "You can't pay online for pick-up orders");
+    } else if (order.isPaid()) {
+      model.put("error", "You've already paid for that order!");
+    } else {
+      model.put("order", order);
+      return "pay";
+    }
+
+    orderService.addOrdersToModel(user, model);
+    return "orders";
+  }
+
+  @RequestMapping(value="/pay", method=RequestMethod.POST)
+  public String payResponse(
+    @ModelAttribute("user") User loginUser, @ModelAttribute("payment") Payment payment,
+    ModelMap model, HttpServletRequest req
+  ) {
+    User user = userService.addUserToModel(model, req);
+    if (user == null) return "login";
+
+    Order order = orderService.getOrder(payment.getOrderId());
+
+    if (!user.isCustomer()) {
+      model.put("error", "Only customers can pay for orders");
+    } else if (!order.getCustomerUsername().equals(user.getUsername())) {
+      model.put("error", "You don't have permission to pay for that order!");
+    } else if (!order.isCourier()) {
+      model.put("error", "You can't pay online for pick-up orders");
+    } else if (order.isPaid()) {
+      model.put("error", "You've already paid for that order!");
+    } else if (!orderService.makePayment(payment)) {
+      model.put("error", "Payment failed!");
+    } else {
+      model.put("message", "Payment successful!");
+    }
+
+    orderService.addOrdersToModel(user, model);
+    return "orders";
   }
 }

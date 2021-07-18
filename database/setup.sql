@@ -164,6 +164,7 @@ CREATE TABLE `orders` (
     `deliveredDate` DATE,
     `orderStatusId` INT NOT NULL,
     `amount` FLOAT(8, 2),
+    `courier` BOOLEAN NOT NULL DEFAULT FALSE,
     `orderNotes` TEXT NOT NULL,
     `topFabric` VARCHAR(64) NOT NULL,
     `topMaterial` VARCHAR(64) NOT NULL,
@@ -186,6 +187,17 @@ CREATE TABLE `orders` (
     FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (patternId) REFERENCES patterns(patternId) ON DELETE CASCADE,
     FOREIGN KEY (orderStatusID) REFERENCES orderStatus(orderStatusId) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE `payments` (
+    `orderId` INT NOT NULL,
+    `cardName` VARCHAR(64) NOT NULL,
+    `cardNumber` VARCHAR(64) NOT NULL,
+    `cardExpiry` VARCHAR(10) NOT NULL,
+    `cardCvv` VARCHAR(5) NOT NULL,
+    `paid` BOOLEAN NOT NULL,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (orderId) REFERENCES orders(orderId) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `reviews` (

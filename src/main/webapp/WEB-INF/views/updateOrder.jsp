@@ -28,7 +28,22 @@
           <p>
             <strong>Ordered by: </strong> ${order.customerUsername}<br />
             <strong>Order Date: </strong>${order.placedDate}<br />
-            <strong>Notes: </strong>${order.orderNotes}
+            <c:choose>
+              <c:when test="${order.courier}">
+                <strong>Delivery  Method: </strong> Courier
+                <c:if test="${order.orderStatusId == 2}">
+                  <br />
+                  <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
+                </c:if>
+              </c:when>
+              <c:otherwise>
+                <strong>Delivery  Method: </strong> Pick Up
+              </c:otherwise>
+            </c:choose>
+            <c:if test="${order.orderNotes.length() > 0}">
+              <br />
+              <strong>Notes: </strong>${order.orderNotes}
+            </c:if>
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 package com.tailoring.tailoringstore.service;
 
 import com.tailoring.tailoringstore.model.Order;
+import com.tailoring.tailoringstore.model.Payment;
 import com.tailoring.tailoringstore.model.Review;
 import com.tailoring.tailoringstore.model.User;
 import com.tailoring.tailoringstore.util.Helper;
@@ -19,14 +20,15 @@ public class OrderService {
 
   public boolean placeOrder(Order order) {
     String sql = "INSERT INTO orders (customerUsername, tailorUsername, patternId, orderStatusId, topFabric, topMaterial, topDuration, topLength, topQuantity, neck, waist, ";
-    sql += "chest, shoulderLength, bottomFabric, bottomMaterial, bottomDuration, bottomLength, bottomQuantity, hip, kneeLength, orderNotes, expectedDeliveryDate) VALUES ";
-    sql += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    sql += "chest, shoulderLength, bottomFabric, bottomMaterial, bottomDuration, bottomLength, bottomQuantity, hip, kneeLength, orderNotes, expectedDeliveryDate, courier) VALUES ";
+    sql += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
     try {
       jdbcTemplate.update(
         sql, order.getCustomerUsername(), order.getTailorUsername(), order.getPatternId(), 1, order.getTopFabric(), order.getTopMaterial(),
         order.getTopDuration(), order.getTopLength(), order.getTopQuantity(), order.getNeck(), order.getWaist(), order.getChest(), order.getShoulderLength(),
         order.getBottomFabric(), order.getBottomMaterial(), order.getBottomDuration(), order.getBottomLength(), order.getBottomQuantity(), order.getHip(),
-        order.getKneeLength(), order.getOrderNotes(), Helper.mysqlDate(order.getExpectedDeliveryDate())
+        order.getKneeLength(), order.getOrderNotes(), Helper.mysqlDate(order.getExpectedDeliveryDate()), order.isCourier()
       );
       return true;
     } catch (Exception e) {
@@ -37,8 +39,8 @@ public class OrderService {
   }
 
   public List<Order> getOrders(String customerUsername, String tailorUsername, int orderStatusId) {
-    String sql = "SELECT o.*, s.orderStatus, p.`name` AS patternName, r.review FROM orders o INNER JOIN orderStatus s ON o.orderStatusId = s.orderStatusId ";
-    sql += "INNER JOIN patterns p ON o.patternID = p.patternId LEFT JOIN reviews r ON o.orderId = r.orderId ";
+    String sql = "SELECT o.*, s.orderStatus, p.`name` AS patternName, r.review, z.paid FROM orders o INNER JOIN orderStatus s ON o.orderStatusId = s.orderStatusId ";
+    sql += "INNER JOIN patterns p ON o.patternID = p.patternId LEFT JOIN reviews r ON o.orderId = r.orderId LEFT JOIN payments z ON o.orderId = z.orderId ";
 
     List<Object> args = new ArrayList<>();
 
@@ -72,8 +74,8 @@ public class OrderService {
   }
 
   public Order getOrder(int orderId) {
-    String sql = "SELECT o.*, s.orderStatus, p.`name` AS patternName, r.review FROM orders o INNER JOIN orderStatus s ON o.orderStatusId = s.orderStatusId ";
-    sql += "INNER JOIN patterns p ON o.patternID = p.patternId LEFT JOIN reviews r ON o.orderId = r.orderId WHERE o.orderId = ? ";
+    String sql = "SELECT o.*, s.orderStatus, p.`name` AS patternName, r.review, z.paid FROM orders o INNER JOIN orderStatus s ON o.orderStatusId = s.orderStatusId ";
+    sql += "INNER JOIN patterns p ON o.patternID = p.patternId LEFT JOIN reviews r ON o.orderId = r.orderId LEFT JOIN payments z ON o.orderId = z.orderId WHERE o.orderId = ? ";
 
     try {
       List<Order> orders = jdbcTemplate.query(sql, new Object[]{orderId}, new Order.OrderRowMapper(true));
@@ -179,6 +181,18 @@ public class OrderService {
       return true;
     } catch (Exception e) {
       System.err.println("Failed to review order #" + review.getOrderId() + ": " + e.getMessage());
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public boolean makePayment(Payment payment) {
+    String sql = "INSERT INTO payments (orderId, cardName, cardNumber, cardExpiry, cardCvv, paid) VALUES (?, ?, ?, ?, ?, ?)";
+    try {
+      jdbcTemplate.update(sql, payment.getOrderId(), payment.getCardName(), payment.getCardNumber(), payment.getCardExpiry(), payment.getCardCvv(), true);
+      return true;
+    } catch (Exception e) {
+      System.err.println("Failed to pay for order #" + payment.getOrderId() + ": " + e.getMessage());
       e.printStackTrace();
       return false;
     }
