@@ -425,8 +425,6 @@ public class OrderController {
       model.put("error", "Only customers can pay for orders");
     } else if (!order.getCustomerUsername().equals(user.getUsername())) {
       model.put("error", "You don't have permission to pay for that order!");
-    } else if (!order.isCourier()) {
-      model.put("error", "You can't pay online for pick-up orders");
     } else if (order.isPaid()) {
       model.put("error", "You've already paid for that order!");
     } else {
@@ -452,8 +450,6 @@ public class OrderController {
       model.put("error", "Only customers can pay for orders");
     } else if (!order.getCustomerUsername().equals(user.getUsername())) {
       model.put("error", "You don't have permission to pay for that order!");
-    } else if (!order.isCourier()) {
-      model.put("error", "You can't pay online for pick-up orders");
     } else if (order.isPaid()) {
       model.put("error", "You've already paid for that order!");
     } else if (!orderService.makePayment(payment)) {

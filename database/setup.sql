@@ -202,7 +202,6 @@ CREATE TABLE `payments` (
 
 CREATE TABLE `reviews` (
     `orderId` INT NOT NULL,
-    `stars` TINYINT NOT NULL,
     `review` TEXT NOT NULL,
     PRIMARY KEY (orderId),
     FOREIGN KEY (orderId) REFERENCES orders(orderId) ON DELETE CASCADE

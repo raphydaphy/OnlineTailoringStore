@@ -33,23 +33,23 @@
                 <strong>Cost: </strong><fmt:formatNumber type="number" maxFractionDigits="2" minFractionDigits="2" value="${order.amount}"/> INR<br />
               </c:if>
               <strong>Creation Date: </strong>${order.placedDate}<br />
-              <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />
+              <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}
               <c:if test="${order.orderStatusId < 3}">
+                <br />
+                <strong>Delivery  Method: </strong>
                 <c:choose>
                   <c:when test="${order.courier}">
-                    <strong>Delivery  Method: </strong> Courier
-                    <c:if test="${order.orderStatusId == 2}">
-                      <br />
-                      <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
-                    </c:if>
+                    Courier
                   </c:when>
                   <c:otherwise>
-                    <strong>Delivery  Method: </strong> Pick Up
+                    Pick Up
                   </c:otherwise>
                 </c:choose>
+                <br />
+                <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
               </c:if>
               <c:if test="${order.orderNotes.length() > 0}">
-                <Br />
+                <br />
                 <strong>Notes: </strong>${order.orderNotes}
               </c:if>
 
@@ -72,7 +72,7 @@
               </c:when>
             </c:choose>
           </c:if>
-          <c:if test="${user.category == 'customer' && order.amount > 0 && order.courier && !order.paid && order.orderStatusId == 2}">
+          <c:if test="${user.category == 'customer' && order.amount > 0 && !order.paid && order.orderStatusId == 2}">
             <a href="/pay?order=${order.orderId}" class="btn btn-primary btn-block">Make Payment</a>
           </c:if>
           <c:if test="${order.orderStatusId != 3}">
