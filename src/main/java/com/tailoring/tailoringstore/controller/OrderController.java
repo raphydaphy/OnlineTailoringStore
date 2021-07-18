@@ -132,6 +132,11 @@ public class OrderController {
       model.put("error", "Failed to place order: Invalid tailor shop");
     } else if (pattern == null) {
       model.put("error", "Failed to place order: Invalid pattern");
+    } else if (!order.isPayingOnline() && order.isCourier()) {
+      model.put("shop", shop);
+      model.put("orderPattern", pattern);
+      model.put("error", "You must pay online if your order is delivered by courier");
+      return "makeOrder";
     } else if (!orderService.placeOrder(order)) {
       model.put("error", "Failed to place order");
     } else {
@@ -427,6 +432,8 @@ public class OrderController {
       model.put("error", "You don't have permission to pay for that order!");
     } else if (order.isPaid()) {
       model.put("error", "You've already paid for that order!");
+    } else if (!order.isPayingOnline()) {
+      model.put("error", "You've chosen to pay for that order in person!");
     } else {
       model.put("order", order);
       return "pay";
@@ -454,6 +461,8 @@ public class OrderController {
       model.put("error", "You've already paid for that order!");
     } else if (!orderService.makePayment(payment)) {
       model.put("error", "Payment failed!");
+    } else if (!order.isPayingOnline()) {
+      model.put("error", "You've chosen to pay for that order in person!");
     } else {
       model.put("message", "Payment successful!");
     }

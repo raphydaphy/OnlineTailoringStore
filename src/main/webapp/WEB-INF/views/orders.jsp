@@ -41,6 +41,7 @@
               </c:if>
               <strong>Creation Date: </strong>${order.placedDate}<br />
               <strong>Expected Delivery Date: </strong>${order.expectedDeliveryDate}<br />
+              <strong>Payment Method: </strong> ${order.payingOnline ? "Card" : "Cash"}<br />
               <strong>Delivery  Method: </strong>
               <c:choose>
                 <c:when test="${order.courier}">
@@ -105,6 +106,8 @@
                 </c:otherwise>
               </c:choose>
               <br />
+              <strong>Payment Method: </strong> ${order.payingOnline ? "Card" : "Cash"}
+              <br />
               <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
               <c:if test="${order.orderNotes.length() > 0}">
                 <br />
@@ -115,7 +118,7 @@
               <a href="/completeOrder?id=${order.orderId}" class="btn btn-primary">Complete Order</a>
               <a href="/updateOrder?id=${order.orderId}" class="btn btn-primary">Update Order</a>
             </c:if>
-            <c:if test="${user.category == 'customer' && order.amount > 0 && !order.paid && order.orderStatusId == 2}">
+            <c:if test="${user.category == 'customer' && order.amount > 0 && !order.paid && order.orderStatusId == 2 && order.isPayingOnline}">
               <a href="/pay?order=${order.orderId}" class="btn btn-primary">Make Payment</a>
             </c:if>
             <a href="/deleteOrder?id=${order.orderId}" class="btn btn-secondary">Delete Order</a>

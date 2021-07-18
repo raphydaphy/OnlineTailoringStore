@@ -38,6 +38,8 @@
               </c:otherwise>
             </c:choose>
             <br />
+            <strong>Payment Method: </strong> ${order.payingOnline ? "Card" : "Cash"}
+            <br />
             <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
             <c:if test="${order.orderNotes.length() > 0}">
               <br />

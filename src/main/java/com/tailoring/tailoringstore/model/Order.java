@@ -29,6 +29,7 @@ public class Order {
 
   private boolean courier;
   private boolean paid;
+  private boolean payingOnline;
 
   private String topFabric;
   private String topMaterial;
@@ -151,6 +152,14 @@ public class Order {
 
   public void setPaid(boolean paid) {
     this.paid = paid;
+  }
+
+  public boolean isPayingOnline() {
+    return payingOnline;
+  }
+
+  public void setPayingOnline(boolean payingOnline) {
+    this.payingOnline = payingOnline;
   }
 
   public String getTopFabric() {
@@ -326,6 +335,7 @@ public class Order {
       order.setOrderNotes(rs.getString("orderNotes"));
 
       order.setCourier(rs.getBoolean("courier"));
+      order.setPayingOnline(rs.getBoolean("payingOnline"));
 
       order.setTopFabric(rs.getString("topFabric"));
       order.setTopMaterial(rs.getString("topMaterial"));

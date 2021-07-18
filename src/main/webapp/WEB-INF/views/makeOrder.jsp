@@ -52,6 +52,13 @@
           </form:select>
         </div>
       </c:if>
+      <div class="col-sm form-group">
+        <label for="payingOnline">Payment Method</label>
+        <form:select path="payingOnline" cssClass="form-control" required="true">
+          <option value="1">Card</option>
+          <option value="0">Cash</option>
+        </form:select>
+      </div>
     </div>
 
     <div class="row">

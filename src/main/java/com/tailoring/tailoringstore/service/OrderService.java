@@ -19,13 +19,13 @@ public class OrderService {
   private JdbcTemplate jdbcTemplate;
 
   public boolean placeOrder(Order order) {
-    String sql = "INSERT INTO orders (customerUsername, tailorUsername, patternId, orderStatusId, topFabric, topMaterial, topDuration, topLength, topQuantity, neck, waist, ";
+    String sql = "INSERT INTO orders (customerUsername, tailorUsername, patternId, orderStatusId, payingOnline, topFabric, topMaterial, topDuration, topLength, topQuantity, neck, waist, ";
     sql += "chest, shoulderLength, bottomFabric, bottomMaterial, bottomDuration, bottomLength, bottomQuantity, hip, kneeLength, orderNotes, expectedDeliveryDate, courier) VALUES ";
-    sql += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    sql += "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try {
       jdbcTemplate.update(
-        sql, order.getCustomerUsername(), order.getTailorUsername(), order.getPatternId(), 1, order.getTopFabric(), order.getTopMaterial(),
+        sql, order.getCustomerUsername(), order.getTailorUsername(), order.getPatternId(), 1, order.isPayingOnline(), order.getTopFabric(), order.getTopMaterial(),
         order.getTopDuration(), order.getTopLength(), order.getTopQuantity(), order.getNeck(), order.getWaist(), order.getChest(), order.getShoulderLength(),
         order.getBottomFabric(), order.getBottomMaterial(), order.getBottomDuration(), order.getBottomLength(), order.getBottomQuantity(), order.getHip(),
         order.getKneeLength(), order.getOrderNotes(), Helper.mysqlDate(order.getExpectedDeliveryDate()), order.isCourier()

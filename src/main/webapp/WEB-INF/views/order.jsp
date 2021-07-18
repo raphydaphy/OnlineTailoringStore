@@ -46,6 +46,8 @@
                   </c:otherwise>
                 </c:choose>
                 <br />
+                <strong>Payment Method: </strong> ${order.payingOnline ? "Card" : "Cash"}
+                <br />
                 <strong>Paid: </strong> ${order.paid ? "Yes" : "No"}
               </c:if>
               <c:if test="${order.orderNotes.length() > 0}">
@@ -72,7 +74,7 @@
               </c:when>
             </c:choose>
           </c:if>
-          <c:if test="${user.category == 'customer' && order.amount > 0 && !order.paid && order.orderStatusId == 2}">
+          <c:if test="${user.category == 'customer' && order.amount > 0 && !order.paid && order.orderStatusId == 2 && order.payingOnline}">
             <a href="/pay?order=${order.orderId}" class="btn btn-primary btn-block">Make Payment</a>
           </c:if>
           <c:if test="${order.orderStatusId != 3}">
