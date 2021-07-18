@@ -44,6 +44,7 @@ public class OrderController {
     }
 
     model.put("dressTypes", categoryService.getDressTypes());
+    model.put("areas", tailorService.getTailorShopAreas());
     model.put("tailorShops", tailorService.getTailorShops(tailorShopSearch));
     return "tailors";
   }
@@ -66,6 +67,7 @@ public class OrderController {
       model.put("error", "Invalid tailor shop");
 
       model.put("dressTypes", categoryService.getDressTypes());
+      model.put("areas", tailorService.getTailorShopAreas());
       model.put("tailorShops", tailorService.getTailorShops(tailorShopSearch));
       return "tailors";
     }
@@ -93,6 +95,7 @@ public class OrderController {
       model.put("error", "Invalid tailor shop");
 
       model.put("dressTypes", categoryService.getDressTypes());
+      model.put("areas", tailorService.getTailorShopAreas());
       model.put("tailorShops", tailorService.getTailorShops(tailorShopSearch));
       return "tailors";
     }

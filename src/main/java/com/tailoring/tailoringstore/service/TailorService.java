@@ -37,7 +37,7 @@ public class TailorService {
       sql += "WHERE tailorUsername IN (SELECT tailorUsername FROM tailorDressTypes WHERE dressTypeId = ? AND enabled = TRUE) ";
       args.add(filter.getDressType().getDressTypeId());
     }
-    if (filter.getArea() != null && filter.getArea().length() > 0) {
+    if (filter.getArea() != null && filter.getArea().length() > 0 && !filter.getArea().equals("none")) {
       if (args.size() > 0) sql += "AND LOWER(shopAddress) LIKE ? ";
       else sql += "WHERE LOWER(shopAddress) LIKE ? ";
       args.add("%" + filter.getArea().toLowerCase() + "%");
@@ -46,6 +46,17 @@ public class TailorService {
       return jdbcTemplate.query(sql, args.toArray(), new TailorShop.TailorShopRowMapper());
     } catch (Exception e) {
       System.err.println("Failed to get tailor shops: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+  }
+
+  public List<String> getTailorShopAreas() {
+    String sql = "SELECT DISTINCT shopAddress FROM tailorShops";
+    try {
+      return jdbcTemplate.query(sql, new TailorShopSearch.AreaRowMapper());
+    } catch (Exception e) {
+      System.err.println("Failed to get area list: " + e.getMessage());
       e.printStackTrace();
       return new ArrayList<>();
     }

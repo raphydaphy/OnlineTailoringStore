@@ -18,7 +18,12 @@
     <div class="row align-items-center">
       <div class="row col-md flex-grow-1 align-items-center">
         <div class="col-sm form-group flex-grow-1 align-items-center">
-          <form:input path="area" name="area" id="area" cssClass="form-control" placeholder="Area" />
+          <form:select path="area" name="area" id="area" cssClass="form-control" required="true">
+            <form:option value="none">Any Area</form:option>
+            <c:forEach items="${areas}" var="area">
+              <form:option value="${area}">${area}</form:option>
+            </c:forEach>
+          </form:select>
         </div>
         <div class="col-sm form-group flex-grow-1 align-items-center">
           <form:select path="dressType.dressTypeId" name="dressTypeId" id="dressTypeId" cssClass="form-control" required="true">
