@@ -110,12 +110,24 @@ public class UserController {
   }
 
   @RequestMapping("/adminRegister")
-  public String adminRegister(@ModelAttribute("user") User user, Model model) {
+  public String adminRegister(@ModelAttribute("user") User user, ModelMap model) {
+    List<User> admins = userService.getAdmins();
+    if (admins.size() > 0) {
+      model.put("error", "You can't register an admin account because one already exists in the system!");
+      return "index";
+    }
+
     return "adminRegister";
   }
 
   @RequestMapping(value="/adminRegister", method=RequestMethod.POST)
   public String adminRegisterResponse(@ModelAttribute("user") User user, BindingResult result, ModelMap model) {
+    List<User> admins = userService.getAdmins();
+    if (admins.size() > 0) {
+      model.put("error", "You can't register an admin account because one already exists in the system!");
+      return "index";
+    }
+
     if (result.hasErrors()) {
       System.out.println("Result errors: " + result.getAllErrors().toString());
       model.put("error", "An error occurred. Please try again.");

@@ -3,6 +3,7 @@ package com.tailoring.tailoringstore.service;
 import com.tailoring.tailoringstore.model.SecurityQuestion;
 import com.tailoring.tailoringstore.model.SecurityQuestionPrompt;
 import com.tailoring.tailoringstore.model.User;
+import com.tailoring.tailoringstore.util.Helper;
 import com.tailoring.tailoringstore.util.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,6 +34,16 @@ public class UserService {
     }
   }
 
+  public List<User> getAdmins() {
+    try {
+      return jdbcTemplate.query("SELECT * from users WHERE category = 'admin'", new User.UserRowMapper());
+    } catch (Exception e) {
+      System.err.println("Failed to get admin list: " + e.getMessage());
+      e.printStackTrace();
+      return new ArrayList<>();
+    }
+  }
+
   public User getUserWithEmailOrNumber(String email, String contactNumber) {
     try {
       List<User> user = jdbcTemplate.query("SELECT * from users WHERE email = ? OR contactNumber = ?", new Object[]{email, contactNumber}, new User.UserRowMapper());
@@ -58,7 +69,10 @@ public class UserService {
     String passwordHash = encoder.encode(user.getPassword());
 
     try {
-      jdbcTemplate.update(sql, user.getUsername(), passwordHash, user.getFirstName(), user.getLastName(), user.getDateOfBirth(), user.getGender(), user.getEmail(), user.getContactNumber(), user.getCategory());
+      jdbcTemplate.update(
+        sql, user.getUsername(), passwordHash, user.getFirstName(), user.getLastName(), Helper.mysqlDate(user.getDateOfBirth()),
+        user.getGender(), user.getEmail(), user.getContactNumber(), user.getCategory()
+      );
       user.setPassword(null);
       user.setPasswordHash(passwordHash);
       return new UserResponse(user);

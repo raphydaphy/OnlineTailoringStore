@@ -46,7 +46,12 @@
     <div class="row">
       <div class="col-sm form-group">
         <label for="dateOfBirth">Date of Birth</label>
-        <form:input path="dateOfBirth" name="dateOfBirth" id="dateOfBirth" pattern="" cssClass="form-control" required="true" />
+        <div class="input-group date" data-provide="datepicker">
+          <form:input cssClass="form-control" path="dateOfBirth" required="true" />
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-th"></span>
+          </div>
+        </div>
       </div>
       <div class="col-sm form-group">
         <label for="gender">Gender</label>

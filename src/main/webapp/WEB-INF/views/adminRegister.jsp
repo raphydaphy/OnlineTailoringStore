@@ -3,7 +3,7 @@
   <h1>Online Tailoring Store</h1>
   <p>
     Create a new admin account using to the form below.<br />
-    Already have an account? <a href="/adminLogin">Login now</a>!
+    Already have an account? <a href="/login">Login now</a>!
   </p>
 
   <c:choose>
@@ -46,7 +46,12 @@
     <div class="row">
       <div class="col-sm form-group">
         <label for="dateOfBirth">Date of Birth</label>
-        <form:input path="dateOfBirth" name="dateOfBirth" id="dateOfBirth" pattern="" cssClass="form-control" required="true" />
+        <div class="input-group date" data-provide="datepicker">
+          <form:input cssClass="form-control" path="dateOfBirth" required="true" />
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-th"></span>
+          </div>
+        </div>
       </div>
       <div class="col-sm form-group">
         <label for="gender">Gender</label>

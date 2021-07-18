@@ -1,5 +1,6 @@
 package com.tailoring.tailoringstore.model;
 
+import com.tailoring.tailoringstore.util.Helper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -128,7 +129,7 @@ public class User {
       user.setPasswordHash(rs.getString("passwordHash"));
       user.setFirstName(rs.getString("firstName"));
       user.setLastName(rs.getString("lastName"));
-      user.setDateOfBirth(rs.getString("dateOfBirth"));
+      user.setDateOfBirth(Helper.bootstrapDate(rs.getString("dateOfBirth")));
       user.setGender(rs.getString("gender"));
       user.setEmail(rs.getString("email"));
       user.setContactNumber(rs.getString("contactNumber"));

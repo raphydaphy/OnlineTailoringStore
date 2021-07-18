@@ -36,7 +36,7 @@ CREATE TABLE `users` (
     passwordHash VARCHAR(255) NOT NULL,
     firstName VARCHAR(32) NOT NULL,
     lastName VARCHAR(32) NOT NULL,
-    dateOfBirth VARCHAR(10) NOT NULL,
+    dateOfBirth DATE NOT NULL,
     gender VARCHAR(8) NOT NULL,
     email VARCHAR(64) NOT NULL,
     contactNumber VARCHAR(16) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `tickets` (
     `closed` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (ticketId),
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
-    FOREIGN KEY (responseUsername) REFERENCES users(username)
+    FOREIGN KEY (responseUsername) REFERENCES users(username) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE `categories` (
@@ -114,8 +114,8 @@ CREATE TABLE `securityQuestions` (
     `promptId` INT NOT NULL,
     `answer` VARCHAR(64) NOT NULL,
     PRIMARY KEY(username, promptId),
-    FOREIGN KEY(username) REFERENCES users(username),
-    FOREIGN KEY(promptID) REFERENCES securityQuestionPrompts(promptId)
+    FOREIGN KEY(username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY(promptID) REFERENCES securityQuestionPrompts(promptId) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `tailorShops` (
@@ -127,7 +127,7 @@ CREATE TABLE `tailorShops` (
     `availableServices` VARCHAR(64) NOT NULL,
     `courierAvailable` BOOLEAN NOT NULL,
     PRIMARY KEY (tailorUsername),
-    FOREIGN KEY (tailorUsername) REFERENCES users(username)
+    FOREIGN KEY (tailorUsername) REFERENCES users(username) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `patterns` (
@@ -141,8 +141,8 @@ CREATE TABLE `patterns` (
     `imageData` MEDIUMBLOB NOT NULL,
     PRIMARY KEY (patternId),
     FOREIGN KEY (tailorUsername) REFERENCES users(username),
-    FOREIGN KEY (categoryId) REFERENCES categories(categoryId),
-    FOREIGN KEY (dressTypeId) REFERENCES dressTypes(dressTypeId) 
+    FOREIGN KEY (categoryId) REFERENCES categories(categoryId) ON DELETE CASCADE,
+    FOREIGN KEY (dressTypeId) REFERENCES dressTypes(dressTypeId) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE `orderStatus` (
